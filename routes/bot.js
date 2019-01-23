@@ -48,7 +48,6 @@ db.select().field(["課程名稱", "選課序號"]).from("course_new").where("�
         }
         courseSerialList.push(data[i].選課序號);
     }
-    console.log(courseNameList);
 });
 checkCourse = setInterval(function () {
     checkCoureseRemain();
