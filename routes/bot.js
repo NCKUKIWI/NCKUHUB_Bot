@@ -765,9 +765,9 @@ function askPlaceOrFollow(sender, serial) {
 	db.select().field(["id", "系所名稱", "課程名稱", "老師", "時間"]).from("course_new").where("選課序號=", serial).run(function (course) {
 		db = null;
 		if (course.length > 0) {
-            console.log(course);
+            course = course[0];
 			sendGenericTemplate(sender,
-				`你選擇的課程是：\n\n${course[0].系所名稱.replace(/[A-Z0-9]/g, "")}／${course[0].課程名稱.replace(/[（|）|\s]/g, "")}／${course[0].老師.replace(/\s/g, "")}／${course[0].時間}\n\n`, [{
+				`你選擇的課程是：\n\n${course.系所名稱.replace(/[A-Z0-9]/g, "")}／${course.課程名稱.replace(/[（|）|\s]/g, "")}／${course.老師.replace(/\s/g, "")}／${course.時間}\n\n`, [{
 						"type": "postback",
 						"title": "尋找上課地點",
 						"payload": postback.courseIdInfo.generator(course => course.id)
