@@ -38,9 +38,9 @@ if (disable.length > 0) {
 var db = new dbsystem();
 db.select().field(["課程名稱", "選課序號"]).from("course_new").where("選課序號!=", "").run(function (data, err) {
 	for (var i in data) {
-        var courseNameTypeOne = data[i].課程名稱.replace(/一|二|三|四|五|六|七|八|九|\(|\)|\（|\）|\s/g, "");
-        var courseNameTypeTwo = data[i].課程名稱.replace(/\(|\)|\（|\）|\s/g, "");
-        var courseNameTypeThree = data[i].課程名稱;
+        var courseNameTypeOne = data[i].課程名稱.replace(/一|二|三|四|五|六|七|八|九|\(|\)|\（|\）|\s|\n/g, "");
+        var courseNameTypeTwo = data[i].課程名稱.replace(/\(|\)|\（|\）|\s|\n/g, "");
+        var courseNameTypeThree = data[i].課程名稱.replace(/\(|\)|\（|\）|\n/g, "");
         if (courseNameList.indexOf(courseNameTypeOne) == -1) {
 		    courseNameList.push(courseNameTypeOne);
         }
@@ -52,6 +52,7 @@ db.select().field(["課程名稱", "選課序號"]).from("course_new").where("�
         }
         courseSerialList.push(data[i].選課序號);
     }
+    console.log(courseNameList);
 });
 checkCourse = setInterval(function () {
     checkCoureseRemain();
