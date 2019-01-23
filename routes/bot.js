@@ -366,17 +366,19 @@ router.post('/', function (req, res) {
                             // if (serial) {
                             //     if (courseSerialList.indexOf(serial[0].toUpperCase()) !== -1) {
                             //         if (! isVarify) {
-                            //             sendNotVarify(sender, title);
+                            //             sendNotVarify(sender, "搜尋課程");
                             //             return;
                             //         }
                             //         askPlaceOrFollow(sender, serial[0]);
+                            //         return;
                             //     }
                             // } else if (courseNameList.indexOf(text) != -1) {
                             //     if (! isVarify) {
-                            //         sendNotVarify(sender, title);
+                            //         sendNotVarify(sender, "搜尋課程");
                             //         return;
                             //     }
                             //     searchCourseByName(sender, text);
+                            //     return;
                             // }
                             var teacher = text.match(/[\%|\uff05][\u4e00-\u9fa5]{1,}/i); //檢查 %老師名稱
                             var dpt = text.match(/[\$|\uff04][\u4e00-\u9fa5]{1,}/i); //檢查 $系所名稱
@@ -478,9 +480,8 @@ router.post('/', function (req, res) {
                         } else if (payload == "nckuhubFindClassroom") {
                             sendTextMessage(sender, "馬上為你尋找上課教室 👌\n\n請告訴我們課程名稱或選課序號，格式為「@微積分」或「@H3005」\n\n你也可以加上「$系所」、「%老師名」，來精準搜尋課程，例如「@微積分 $工資 %王哈伯」");
                             return;
-                        } else if (payload == "callAgain") {
-                            sendTextMessage(sender, "如需再次使用小幫手，請點選下方的選單點選你要使用的功能 👇🏻");
-                            sendImage(sender, host + "/assets/images/howToUse.png");
+                        } else if (payload == "thankYou") {
+                            sendTextMessage(sender, "不客氣，也謝謝你的使用 🙂");
                         } else if (payload == "cancelall") {
                             cancelAllFollowCourse(sender);
                         } else if (courseIdFollow) {
@@ -786,19 +787,14 @@ function sendHello(sender) {
 }
 
 function sendGoodbye(sender) {
-    const goodbyeMessage = genericTemplateGenerator("感謝使用 🙏 希望有幫上你的忙！", [
-        {
-            "type": "postback",
-            "title": "再次呼喚小幫手",
-            "payload": "callAgain"
-        }, {
-            "type": "postback",
-            "title": "用完了，謝謝！",
-            "payload": "不客氣，也謝謝你的使用 🙂"
-        }
-    ]);
 	setTimeout(function () {
-		sendMessage(sender, goodbyeMessage);
+		sendButtonsMessage(sender, "如需再次使用小幫手，請點選下方的選單點選你要使用的功能 👇🏻", [
+            {
+                "type": "postback",
+                "title": "用完了，謝謝！",
+                "payload": "thankYou"
+            }
+        ]);
 	}, 2000);
 }
 
