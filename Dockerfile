@@ -8,6 +8,8 @@ WORKDIR /usr/src/app
 COPY . .
 
 # Install package
+RUN apk update && apk upgrade
+RUN apk add --no-cache bash git openssh
 RUN npm install --production
 
 RUN npm install -g pm2
