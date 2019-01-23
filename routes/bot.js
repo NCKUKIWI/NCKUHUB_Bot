@@ -380,7 +380,9 @@ router.post('/', function (req, res) {
                                     if (teacher) {
                                         teacher = teacher[0].replace(/[\%|\uff05|\s]/g, "");
                                     }
-                                    if (text.indexOf('%') == 0) {
+                                    if (text.indexOf('$') == 0) {
+                                        sendCourseNotFoundMessage(sender);
+                                    } else if (text.indexOf('%') == 0) {
                                         if (! isVarify) {
                                             sendNotVarify(sender, title);
                                             return;
@@ -513,8 +515,7 @@ function sendCoursePlaceByName(sender, name, dpt, teacher) {
 					aCourseButtonTitleGenerator,
 					postback.courseIdInfo.generator(aCourse => aCourse.id)));
 		} else {
-			var text = "查無課程唷 😱😱 會不會是這學期沒開課，或是關鍵字有打錯呢？";
-			sendTextMessage(sender, text);
+            sendCourseNotFoundMessage(sender);
 			sendGoodbye(sender);
 		}
 	});
@@ -528,8 +529,7 @@ function sendCoursePlaceById(sender, serial) {
 		if (course.length > 0) {
 			sendCourseInfo(sender, course[0].id);
 		} else {
-			var text = "查無課程唷 😱😱 會不會是這學期沒開課，或是關鍵字有打錯呢？";
-			sendTextMessage(sender, text);
+            sendCourseNotFoundMessage(sender);
 			sendGoodbye(sender);
 		}
 	});
@@ -576,8 +576,7 @@ function sendFollowCourseByName(sender, name, dpt, teacher) {
 					aCourseButtonTitleGenerator,
 					postback.courseIdFollow.generator(aCourse => aCourse.id)));
 		} else {
-			var text = "查無課程唷 😱😱 會不會是這學期沒開課，或是關鍵字有打錯呢？";
-			sendTextMessage(sender, text);
+            sendCourseNotFoundMessage(sender);
 			sendGoodbye(sender);
 		}
 	});
@@ -590,8 +589,7 @@ function sendFollowCourseById(sender, serial) {
 		if (course.length > 0) {
 			addFollowCourse(sender, course[0].id);
 		} else {
-			var text = "查無課程唷 😱😱 會不會是這學期沒開課，或是關鍵字有打錯呢？";
-			sendTextMessage(sender, text);
+            sendCourseNotFoundMessage(sender);
 			sendGoodbye(sender);
 		}
 	});
@@ -737,8 +735,7 @@ function searchCourseByName(sender, name) {
 					aCourseButtonTitleGenerator,
 					postback.courseIdAsk.generator(aCourse => aCourse.選課序號)));
 		} else {
-			var text = "查無課程唷 😱😱 會不會是這學期沒開課，或是關鍵字有打錯呢？";
-			sendTextMessage(sender, text);
+            sendCourseNotFoundMessage(sender);
 			sendGoodbye(sender);
 		}
 	});
@@ -760,8 +757,7 @@ function searchCourseByTeacher(sender, teacher) {
 					aCourseButtonTitleGenerator,
 					postback.courseIdAsk.generator(aCourse => aCourse.選課序號)));
 		} else {
-			var text = "查無課程唷 😱😱 會不會是這學期沒開課，或是關鍵字有打錯呢？";
-			sendTextMessage(sender, text);
+            sendCourseNotFoundMessage(sender);
 			sendGoodbye(sender);
 		}
 	});
@@ -785,8 +781,7 @@ function askPlaceOrFollow(sender, serial) {
 					}
 				]);
 		} else {
-			var text = "查無課程唷 😱😱 會不會是這學期沒開課，或是關鍵字有打錯呢？";
-			sendTextMessage(sender, text);
+            sendCourseNotFoundMessage(sender);
 			sendGoodbye(sender);
 		}
 	});
@@ -981,6 +976,13 @@ function sendRequest(option, cb) {
 
 function sendNotVarify(sender, func) {
     sendTextMessage(sender, "「" + func +"」目前為鎖定狀態 🔐\n請將你的驗證碼輸入在下方文字框，傳送給我們以進行解鎖唷 🔓🔑\n\n解鎖說明 👉🏻＿＿＿＿＿＿\n提供心得 👉🏻 https://nckuhub.com");
+}
+
+function sendCourseNotFoundMessage(sender) {
+    sendTextMessage(sender, "Ooops！找不到這門課唷，請再次確認是否依照格式輸入，記得前面要加上 # 或 @ 符號喔 😄\n\n" +
+        "追蹤餘額格式：「#課程名稱」\n「#選課序號」\n「#課程名稱（$系所）（%老師名）」\n\n 追蹤餘額範例：「#微積分」\n「#H3005」\n「#微積分 $工資 %王哈伯」\n\n" +
+        "尋找教室格式：\n「@課程名稱」\n「@選課序號」\n「@課程名稱（$系所）（%老師名）」\n\n" +
+        "尋找教室範例：\n「@微積分」\n「@H3005」\n「@微積分 $工資 %王哈伯」\n\n請依以上格式再次輸入，讓 NCKU HUB為你追蹤課程餘額 / 尋找上課教室 🏃🏃🏃");
 }
 
 module.exports = {
