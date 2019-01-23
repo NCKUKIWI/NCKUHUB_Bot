@@ -325,25 +325,11 @@ router.post('/', function (req, res) {
 			});
 		} else if (anEntry.hasOwnProperty('messaging')) { // Messenger
 			anEntry.messaging.forEach(event => {
+                console.log(event);
+                console.log(event.message);
+                console.log(event.message.text);
+                console.log(event.message.is_echo);
 				var sender = event.sender.id; //使用者messenger id
-
-				//維修時期的code
-				if (event.message && event.message.text && typeof event.message.is_echo === "undefined"){
-					var text = event.message.text; //用戶傳送的訊息
-					console.log(`[粉專私訊] 私訊者：『${sender}』訊息：「${text.replace(/\n/, "\\n")}」`);
-					if (text.indexOf("小幫手") !== -1) {
-						sendTextMessage(sender,'同學你好，NCKU HUB 小幫手服務目前正在進行維修，歡迎密切關注粉專或設定搶先看，我們會在重新上線時發文公告 🙌\n\n再次感謝對我們的支持 🙏🏻 如果有任何問題也可以直接回覆在此，我們會儘速為你解答 🚶🚶🚶');
-						if (text.indexOf("小幫手我是管理員") !== -1)
-							subscribeBroadcast(sender, true);
-					}
-					else{
-						sendTextMessage(sender,'同學你好，NCKU HUB 小幫手服務目前正在進行維修，歡迎密切關注粉專或設定搶先看，我們會在重新上線時發文公告 🙌\n\n再次感謝對我們的支持 🙏🏻 如果有任何問題也可以直接回覆在此，我們會儘速為你解答 🚶🚶🚶');
-					}
-				}
-				if (event.postback){
-					sendTextMessage(sender,'同學你好，NCKU HUB 小幫手服務目前正在進行維修，歡迎密切關注粉專或設定搶先看，我們會在重新上線時發文公告 🙌\n\n再次感謝對我們的支持 🙏🏻 如果有任何問題也可以直接回覆在此，我們會儘速為你解答 🚶🚶🚶');
-				}
-
 				//先註解掉其他功能
 
 				// if (event.message && event.message.text && typeof event.message.is_echo === "undefined") {
