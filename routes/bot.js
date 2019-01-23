@@ -525,7 +525,7 @@ function sendCoursePlaceByName(sender, name, dpt, teacher) {
 			sendGenericTemplate(sender, subtitle,
 				buttonsGenerator(course, null, "postback",
 					aCourseButtonTitleGenerator,
-					postback.courseIdInfo.generator(aCourse => aCourse.id)));
+					postback.courseIdInfo.generator(course => course.id)));
 		} else {
             sendCourseNotFoundMessage(sender);
 		}
@@ -584,7 +584,7 @@ function sendFollowCourseByName(sender, name, dpt, teacher) {
 			sendGenericTemplate(sender, subtitle,
 				buttonsGenerator(course, null, "postback",
 					aCourseButtonTitleGenerator,
-					postback.courseIdFollow.generator(aCourse => aCourse.id)));
+					postback.courseIdFollow.generator(course => course.id)));
 		} else {
             sendCourseNotFoundMessage(sender);
 		}
@@ -731,7 +731,7 @@ function searchCourseByName(sender, name) {
 			sendGenericTemplate(sender, subtitle,
 				buttonsGenerator(course, null, "postback",
 					aCourseButtonTitleGenerator,
-					postback.courseIdAsk.generator(aCourse => aCourse.選課序號)));
+					postback.courseIdAsk.generator(course => course.選課序號)));
 		} else {
             sendCourseNotFoundMessage(sender);
 		}
@@ -752,7 +752,7 @@ function searchCourseByTeacher(sender, teacher) {
 			sendGenericTemplate(sender, subtitle,
 				buttonsGenerator(course, null, "postback",
 					aCourseButtonTitleGenerator,
-					postback.courseIdAsk.generator(aCourse => aCourse.選課序號)));
+					postback.courseIdAsk.generator(course => course.選課序號)));
 		} else {
             sendCourseNotFoundMessage(sender);
 		}
@@ -770,11 +770,11 @@ function askPlaceOrFollow(sender, serial) {
 				`你選擇的課程是：\n\n${course[0].系所名稱.replace(/[A-Z0-9]/g, "")}／${course[0].課程名稱.replace(/[（|）|\s]/g, "")}／${course[0].老師.replace(/\s/g, "")}／${course[0].時間}\n\n`, [{
 						"type": "postback",
 						"title": "尋找上課地點",
-						"payload": postback.courseIdInfo.generator(aCourse => aCourse.id)
+						"payload": postback.courseIdInfo.generator(course => course.id)
 					}, {
 						"type": "postback",
 						"title": "追蹤課程餘額",
-						"payload": postback.courseIdFollow.generator(aCourse => aCourse.id)
+						"payload": postback.courseIdFollow.generator(course => course.id)
 					}
 				]);
 		} else {
