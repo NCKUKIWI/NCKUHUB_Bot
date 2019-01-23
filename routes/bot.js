@@ -770,11 +770,11 @@ function askPlaceOrFollow(sender, serial) {
 				`你選擇的課程是：\n\n${course.系所名稱.replace(/[A-Z0-9]/g, "")}／${course.課程名稱.replace(/[（|）|\s]/g, "")}／${course.老師.replace(/\s/g, "")}／${course.時間}\n\n`, [{
 						"type": "postback",
 						"title": "尋找上課地點",
-						"payload": postback.courseIdInfo.generator(course => course.id)
+						"payload": postback.courseIdInfo.generator(course => course.id)(course)
 					}, {
 						"type": "postback",
 						"title": "追蹤課程餘額",
-						"payload": postback.courseIdFollow.generator(course => course.id)
+						"payload": postback.courseIdFollow.generator(course => course.id)(course)
 					}
 				]);
 		} else {
