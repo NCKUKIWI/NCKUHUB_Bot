@@ -38,17 +38,13 @@ if (disable.length > 0) {
 var db = new dbsystem();
 db.select().field(["課程名稱", "選課序號"]).from("course_new").where("選課序號!=", "").run(function (data, err) {
 	for (var i in data) {
-        var courseNameTypeOne = data[i].課程名稱.replace(/一|二|三|四|五|六|七|八|九|\(|\)|\（|\）|\s|\n/g, "");
-        var courseNameTypeTwo = data[i].課程名稱.replace(/\(|\)|\（|\）|\s|\n/g, "");
-        var courseNameTypeThree = data[i].課程名稱.replace(/\(|\)|\（|\）|\n/g, "");
+        var courseNameTypeOne = data[i].課程名稱.replace(/一|二|三|四|五|六|七|八|九|\(|\)|\（|\）|\s/g, "");
+        var courseNameTypeTwo = data[i].課程名稱.replace(/\(|\)|\（|\）|\s/g, "");
         if (courseNameList.indexOf(courseNameTypeOne) == -1) {
 		    courseNameList.push(courseNameTypeOne);
         }
         if (courseNameList.indexOf(courseNameTypeTwo) == -1) {
 		    courseNameList.push(courseNameTypeTwo);
-        }
-        if (courseNameList.indexOf(courseNameTypeThree) == -1) {
-		    courseNameList.push(courseNameTypeThree);
         }
         courseSerialList.push(data[i].選課序號);
     }
@@ -384,7 +380,7 @@ router.post('/', function (req, res) {
                                     askPlaceOrFollow(sender, serial[0]);
                                     return;
                                 }
-                            } else if (courseNameList.indexOf(text) != -1) {
+                            } else if (courseNameList.indexOf(text.replace(/\s/g, "")) != -1) {
                                 if (! isVarify) {
                                     sendNotVarify(sender, "搜尋課程");
                                     return;
