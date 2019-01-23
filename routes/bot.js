@@ -38,9 +38,20 @@ if (disable.length > 0) {
 var db = new dbsystem();
 db.select().field(["課程名稱", "選課序號"]).from("course_new").where("選課序號!=", "").run(function (data, err) {
 	for (var i in data) {
-		courseNameList.push(data[i].課程名稱);
-		courseSerialList.push(data[i].選課序號);
-	}
+        var courseNameTypeOne = data[i].課程名稱.replace(/一|二|三|四|五|六|七|八|九|\(|\)|\（|\）|\s/g, "");
+        var courseNameTypeTwo = data[i].課程名稱.replace(/\(|\)|\（|\）|\s/g, "");
+        var courseNameTypeThree = data[i].課程名稱;
+        if (courseNameList.indexOf(courseNameTypeOne) == -1) {
+		    courseNameList.push(courseNameTypeOne);
+        }
+        if (courseNameList.indexOf(courseNameTypeTwo) == -1) {
+		    courseNameList.push(courseNameTypeTwo);
+        }
+        if (courseNameList.indexOf(courseNameTypeThree) == -1) {
+		    courseNameList.push(courseNameTypeThree);
+        }
+        courseSerialList.push(data[i].選課序號);
+    }
 });
 checkCourse = setInterval(function () {
     checkCoureseRemain();
@@ -377,6 +388,7 @@ router.post('/', function (req, res) {
                                     sendNotVarify(sender, "搜尋課程");
                                     return;
                                 }
+                                text = text.replace(/一|二|三|四|五|六|七|八|九|\(|\)|\（|\）|\s/g, "");
                                 searchCourseByName(sender, text);
                                 return;
                             }
@@ -718,10 +730,9 @@ function sendNotify(course) {
 
 function searchCourseByName(sender, name) {
 	var db = new dbsystem();
-	db.select().field(["id", "系所名稱", "課程名稱", "時間", "選課序號"]).from("course_new").where("課程名稱=", name).where("選課序號!=", "").run(function (course) {
+	db.select().field(["id", "系所名稱", "課程名稱", "時間", "選課序號"]).from("course_new").where("課程名稱 LIKE '%" + name + "%'").where("選課序號!=", "").run(function (course) {
 		db = null;
 		if (course.length > 0) {
-            console.log(course);
 			var subtitle;
 			if (course.length > 30) {
 				subtitle = "以下是找到的前 30 筆結果。若要精準搜尋，請輸入 @課程名稱 $系所 %老師名 或 #課程名稱 $系所 %老師名";
