@@ -362,24 +362,24 @@ router.post('/', function (req, res) {
                                 }
                             });
                         } else {
-                            // var serial = text.replace(/[\s|\-]/g, "").match(/^[a-zA-Z][0-9]{4}/i);
-                            // if (serial) {
-                            //     if (courseSerialList.indexOf(serial[0].toUpperCase()) !== -1) {
-                            //         if (! isVarify) {
-                            //             sendNotVarify(sender, "搜尋課程");
-                            //             return;
-                            //         }
-                            //         askPlaceOrFollow(sender, serial[0]);
-                            //         return;
-                            //     }
-                            // } else if (courseNameList.indexOf(text) != -1) {
-                            //     if (! isVarify) {
-                            //         sendNotVarify(sender, "搜尋課程");
-                            //         return;
-                            //     }
-                            //     searchCourseByName(sender, text);
-                            //     return;
-                            // }
+                            var serial = text.replace(/[\s|\-]/g, "").match(/^[a-zA-Z][0-9]{4}/i);
+                            if (serial) {
+                                if (courseSerialList.indexOf(serial[0].toUpperCase()) !== -1) {
+                                    if (! isVarify) {
+                                        sendNotVarify(sender, "搜尋課程");
+                                        return;
+                                    }
+                                    askPlaceOrFollow(sender, serial[0]);
+                                    return;
+                                }
+                            } else if (courseNameList.indexOf(text) != -1) {
+                                if (! isVarify) {
+                                    sendNotVarify(sender, "搜尋課程");
+                                    return;
+                                }
+                                searchCourseByName(sender, text);
+                                return;
+                            }
                             var teacher = text.match(/[\%|\uff05][\u4e00-\u9fa5]{1,}/i); //檢查 %老師名稱
                             var dpt = text.match(/[\$|\uff04][\u4e00-\u9fa5]{1,}/i); //檢查 $系所名稱
                             if (dpt) {
@@ -721,6 +721,7 @@ function searchCourseByName(sender, name) {
 	db.select().field(["id", "系所名稱", "課程名稱", "時間", "選課序號"]).from("course_new").where("課程名稱=", name).where("選課序號!=", "").run(function (course) {
 		db = null;
 		if (course.length > 0) {
+            console.log(course);
 			var subtitle;
 			if (course.length > 30) {
 				subtitle = "以下是找到的前 30 筆結果。若要精準搜尋，請輸入 @課程名稱 $系所 %老師名 或 #課程名稱 $系所 %老師名";
@@ -764,6 +765,7 @@ function askPlaceOrFollow(sender, serial) {
 	db.select().field(["id", "系所名稱", "課程名稱", "老師", "時間"]).from("course_new").where("選課序號=", serial).run(function (course) {
 		db = null;
 		if (course.length > 0) {
+            console.log(course);
 			sendGenericTemplate(sender,
 				`你選擇的課程是：\n\n${course[0].系所名稱.replace(/[A-Z0-9]/g, "")}／${course[0].課程名稱.replace(/[（|）|\s]/g, "")}／${course[0].老師.replace(/\s/g, "")}／${course[0].時間}\n\n`, [{
 						"type": "postback",
@@ -788,13 +790,7 @@ function sendHello(sender) {
 
 function sendGoodbye(sender) {
 	setTimeout(function () {
-		sendButtonsMessage(sender, "如需再次使用小幫手，請點選下方的選單點選你要使用的功能 👇🏻", [
-            {
-                "type": "postback",
-                "title": "用完了，謝謝！",
-                "payload": "thankYou"
-            }
-        ]);
+		sendTextMessage(sender, "如需再次使用小幫手，請點選下方選單，選擇你要使用的功能 👇🏻");
 	}, 2000);
 }
 
