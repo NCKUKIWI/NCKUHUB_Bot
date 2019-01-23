@@ -263,8 +263,8 @@ function cmtPrivateReply(response_msg, cid) {
  * 文章留言回覆相關宣告 |END|
  */
 
-router.get('/webhook', function (req, res) {
-	if (req.query['hub.verify_token'] === 'nckuhubbver49') {
+router.get('/', function (req, res) {
+	if (req.query['hub.verify_token'] === 'testnckuhub') {
 		res.send(req.query['hub.challenge']);
 	} else {
 		res.send('Error, wrong token');
@@ -299,7 +299,7 @@ const postback = {
 	}
 };
 
-router.post('/webhook', function (req, res) {
+router.post('/', function (req, res) {
 	let body = req.body;
 	body.entry.forEach(function (anEntry) {
 		if (anEntry.hasOwnProperty('changes')) { // 文章留言
