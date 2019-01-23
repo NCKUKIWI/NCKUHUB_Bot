@@ -1,5 +1,6 @@
 var express = require('express');
 var request = require('request');
+var dayjs = require('dayjs');
 var config = require('../config');
 var router = express.Router();
 var dbsystem = require('../model/dba');
@@ -329,11 +330,17 @@ router.post('/', function (req, res) {
                 console.log(event.message.is_echo);
                 var sender = event.sender.id; //使用者messenger id
                 var db = new dbsystem();
-                db.select().field(["id"]).from("messenger_code").where("code", event.message.text).run(function (code) {
+                db.select().field(["id"]).from("messenger_code").where("code=", event.message.text).run(function (code) {
                     console.log(code);
-                    // db.update().table("follow").set({
-                    //     hadNotify: 0
-                    // }).where("id=", follow[i].id).run(function (result) {});
+                    if (code.length > 0) {
+                        code = code[0];
+                        console.log(code);
+                        db.update().table("messenger_code").set({
+                            is_used: 1,
+                            fb_id: sender,
+                            updated_at: dayjs().format('YYYY-MM-DD HH:mm:ss')
+                        }).where("id=", code.id).run(function (result) {});
+                    }
                 });
 				//先註解掉其他功能
 
