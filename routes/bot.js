@@ -599,43 +599,28 @@ function addFollowCourse(sender, course_id) {
 	var db = new dbsystem();
 	db.select().field(["id", "系所名稱", "系號", "課程名稱", "時間", "餘額", "選課序號", "老師"]).from("course_new").where("id=", course_id).run(function (course) {
 		if (disable.indexOf(course[0]['系號']) == -1) {
-			if (course[0].餘額 > 0) {
-				var text = "你選擇的課程是：\n\n" + course[0].系所名稱.replace(/[A-Z0-9]/g, "") + "／" + course[0].課程名稱.replace(/[（|）|\s]/g, "") + "／" + course[0].老師.replace(/\s/g, "") + "／" + course[0].時間 + "\n\n這堂課目前還有餘額！趕快去選吧 🙌🙌\n\n成大選課連結：https://goo.gl/o8zPZH";
-				// var buttons = [{
-				// 	"type": "postback",
-				// 	"title": "仍要追蹤課程",
-				// 	"payload": postback.courseIdForceFollow.generator(aCourse => aCourse.id)(course[0])
-				// }, {
-				// 	"type": "postback",
-				// 	"title": "不用追蹤課程",
-				// 	"payload": "dontFollow"
-				// }];
-                // sendButtonsMessage(sender, text, buttons);
+            const noExtra = (course[0].餘額 > 0 ? "" : "這堂課目前無餘額，");
+            db.select().field("*").from("follow").where("course_id=", course_id).where("fb_id=", sender).run(function (follow) {
+                var text;
+                if (follow.length < 1) {
+                    text = "你選擇的課程是：\n\n" + course[0].系所名稱.replace(/[A-Z0-9]/g, "") + "／" + course[0].課程名稱.replace(/[（|）|\s]/g, "") + "／" + course[0].老師.replace(/\s/g, "") + "／" + course[0].時間 + "\n\n" + noExtra + "已為你設定追蹤 👌 有餘額的時候會私訊你唷！請抱著既期待又怕受傷害的心情等候 🙌🙌";
+                    var data = {
+                        course_id: course_id,
+                        fb_id: sender,
+                        content: course[0].系所名稱.replace(/[A-Z0-9]/g, "") + "／" + course[0].課程名稱.replace(/[（|）|\s]/g, ""),
+                        time: course[0].時間,
+                        serial: (course[0].選課序號) ? course[0].選課序號 : "",
+                        teacher: course[0].老師
+                    };
+                    db.insert().into("follow").set(data).run(function (result) {
+                        db.insert().into("follow_copy").set(data).run(function (result) {}); // for record
+                    });
+                } else {
+                    text = "你選擇的課程是：\n\n" + course[0].系所名稱.replace(/[A-Z0-9]/g, "") + "／" + course[0].課程名稱.replace(/[（|）|\s]/g, "") + "／" + course[0].老師.replace(/\s/g, "") + "／" + course[0].時間 + "\n\n" + noExtra + "已經為你設定過追蹤囉！";
+                }
                 sendTextMessage(sender, text);
-			} else {
-				const noExtra = (course[0].餘額 > 0 ? "" : "這堂課目前無餘額，");
-				db.select().field("*").from("follow").where("course_id=", course_id).where("fb_id=", sender).run(function (follow) {
-					var text;
-					if (follow.length < 1) {
-						text = "你選擇的課程是：\n\n" + course[0].系所名稱.replace(/[A-Z0-9]/g, "") + "／" + course[0].課程名稱.replace(/[（|）|\s]/g, "") + "／" + course[0].老師.replace(/\s/g, "") + "／" + course[0].時間 + "\n\n" + noExtra + "已為你設定追蹤 👌 有餘額的時候會私訊你唷！請抱著既期待又怕受傷害的心情等候 🙌🙌";
-						var data = {
-							course_id: course_id,
-							fb_id: sender,
-							content: course[0].系所名稱.replace(/[A-Z0-9]/g, "") + "／" + course[0].課程名稱.replace(/[（|）|\s]/g, ""),
-							time: course[0].時間,
-							serial: (course[0].選課序號) ? course[0].選課序號 : "",
-							teacher: course[0].老師
-						};
-						db.insert().into("follow").set(data).run(function (result) {
-							db.insert().into("follow_copy").set(data).run(function (result) {}); // for record
-						});
-					} else {
-						text = "你選擇的課程是：\n\n" + course[0].系所名稱.replace(/[A-Z0-9]/g, "") + "／" + course[0].課程名稱.replace(/[（|）|\s]/g, "") + "／" + course[0].老師.replace(/\s/g, "") + "／" + course[0].時間 + "\n\n" + noExtra + "已經為你設定過追蹤囉！";
-					}
-					sendTextMessage(sender, text);
-					sendGoodbye(sender);
-				});
-			}
+                sendGoodbye(sender);
+            });
 		} else {
 			sendDisableMsg(sender, course[0]['系號']);
 		}
