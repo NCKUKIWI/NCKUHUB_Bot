@@ -355,6 +355,7 @@ router.post('/', function (req, res) {
                                         updated_at: dayjs().format('YYYY-MM-DD HH:mm:ss')
                                     }).where("id=", code.id).run(function (result) {
                                         sendTextMessage(sender, "恭喜你成功解鎖小幫手！立即點擊下方選單，選擇你想要使用的服務吧 🙌🏻 🙌🏻 🙌🏻");
+                                        sendImage(sender, host + "/assets/images/howToUse.png");
                                     });
                                 } else {
                                     sendTextMessage(sender, `Ooops！驗證未成功，會不會是驗證碼輸入錯了呢？\n請再次將你的驗證碼輸入在下方文字框，傳送給我們以進行解鎖唷 🔓🔑\n\n解鎖說明 👉🏻${varifyDescriptionLink}\n提供心得 👉🏻 https://nckuhub.com`);
@@ -385,9 +386,7 @@ router.post('/', function (req, res) {
                             if (teacher) {
                                 teacher = teacher[0].replace(/[\%|\uff05|\s]/g, "");
                             }
-                            if (text.indexOf('$') == 0) {
-                                sendCourseNotFoundMessage(sender);
-                            } else if (text.indexOf('%') == 0) {
+                            if (text.indexOf('%') == 0) {
                                 if (! isVarify) {
                                     sendNotVarify(sender, "搜尋課程");
                                     return;
@@ -430,6 +429,9 @@ router.post('/', function (req, res) {
                                     courseSerialFollow = courseSerialFollow[0].replace(/[#|\uff03|\s]/g, "");
                                     sendFollowCourseById(sender, courseSerialFollow); //透過選課序號搜尋並傳送追蹤課程按鈕
                                 }
+                                if (text[0] == "#" || text[0] == "@") {
+                                    sendCourseNotFoundMessage(sender);
+                                }
                             }
                         }
                     });
@@ -444,9 +446,11 @@ router.post('/', function (req, res) {
                         var payload = event.postback.payload;
                         var title = event.postback.title;
                         if (payload == "開始使用") {
-                            sendTextMessage(sender, "你好 👋\nNCKU HUB 小幫手的使命是幫助大家處理各種修課上的麻煩事，請點擊下方選單，選擇你需要的服務唷 ❗❗❗");
-                            sendTextMessage(sender, `提醒你，為了創造選課環境的正向循環，如欲使用「追蹤課程餘額」、「尋找上課教室」功能，需要請你先於 NCKU HUB 提供三門課程心得、完成小幫手解鎖唷 ❤\n\n解鎖說明 👉🏻${varifyDescriptionLink}\n提供心得 👉🏻 https://nckuhub.com\n\n完成填寫心得、取得驗證碼後，點擊下方選單即可開始使用囉 👇🏻`);
-                            sendImage(sender, host + "/assets/images/howToUse.png");
+                            sendTextMessage(sender, "你好 👋\nNCKU HUB 小幫手的使命是幫助大家處理各種修課上的麻煩事，請點擊下方選單，選擇你需要的服務唷 ❗❗❗", function(){
+                                sendTextMessage(sender, `提醒你，為了創造選課環境的正向循環，如欲使用「追蹤課程餘額」、「尋找上課教室」功能，需要請你先於 NCKU HUB 提供三門課程心得、完成小幫手解鎖唷 ❤\n\n解鎖說明 👉🏻${varifyDescriptionLink}\n提供心得 👉🏻 https://nckuhub.com\n\n完成填寫心得、取得驗證碼後，點擊下方選單即可開始使用囉 👇🏻`, function(){
+                                    sendImage(sender, host + "/assets/images/howToUse.png");
+                                });
+                            });
                             return;
                         } else if (payload == "cancelBroadcast") {
                             unsubscribeBroadcast(sender);
@@ -696,7 +700,7 @@ function sendNotify(course) {
     sendLink(course.fb_id, {
         "description": text,
         "url": "https://goo.gl/o8zPZH",
-        "title": "查看成大地圖"
+        "title": "進入選課頁面"
     });
 	var db = new dbsystem();
 	db.update().table("follow").set({
@@ -859,7 +863,6 @@ function elementsGenerator(subtitle, buttons) {
 	return elements;
 }
 
-
 /**
  *
  * @param {String} subtitle
@@ -875,6 +878,17 @@ function genericTemplateGenerator(subtitle, buttons) {
 			}
 		}
 	};
+}
+
+function sendNotVarify(sender, func) {
+    sendTextMessage(sender, "「" + func + `」目前為鎖定狀態 🔐\n請將你的驗證碼輸入在下方文字框，傳送給我們以進行解鎖唷 🔓🔑\n\n解鎖說明 👉🏻${varifyDescriptionLink}\n提供心得 👉🏻 https://nckuhub.com`);
+}
+
+function sendCourseNotFoundMessage(sender) {
+    sendTextMessage(sender, "Ooops！找不到這門課唷，請再次確認是否依照格式輸入，記得前面要加上 # 或 @ 符號喔 😄\n\n" +
+        "追蹤餘額格式：「#課程名稱」\n「#選課序號」\n「#課程名稱（$系所）（%老師名）」\n\n 追蹤餘額範例：「#微積分」\n「#H3005」\n「#微積分 $工資 %王哈伯」\n\n" +
+        "尋找教室格式：\n「@課程名稱」\n「@選課序號」\n「@課程名稱（$系所）（%老師名）」\n\n" +
+        "尋找教室範例：\n「@微積分」\n「@H3005」\n「@微積分 $工資 %王哈伯」\n\n請依以上格式再次輸入，讓 NCKU HUB為你追蹤課程餘額 / 尋找上課教室 🏃🏃🏃");
 }
 
 function sendGenericTemplate(sender, subtitle, buttons) {
@@ -903,10 +917,10 @@ function sendButtonsMessage(sender, txt, buttons) {
 	});
 }
 
-function sendTextMessage(sender, text) {
+function sendTextMessage(sender, text, cb) {
 	return sendMessage(sender, {
 		text: text
-	});
+	}, cb);
 }
 
 function sendImage(sender, imageUrl) {
@@ -921,7 +935,7 @@ function sendImage(sender, imageUrl) {
 	});
 }
 
-function sendMessage(sender, message) {
+function sendMessage(sender, message, cb) {
 	return sendPostRequest({
 		url: msg_url,
 		json: {
@@ -931,7 +945,7 @@ function sendMessage(sender, message) {
 			message: message,
 			messaging_type: "RESPONSE"
 		}
-	});
+	}, cb);
 }
 
 function sendPostRequest(option, cb) {
@@ -963,17 +977,6 @@ function sendRequest(option, cb) {
 			cb(body);
 		}
 	});
-}
-
-function sendNotVarify(sender, func) {
-    sendTextMessage(sender, "「" + func + `」目前為鎖定狀態 🔐\n請將你的驗證碼輸入在下方文字框，傳送給我們以進行解鎖唷 🔓🔑\n\n解鎖說明 👉🏻${varifyDescriptionLink}\n提供心得 👉🏻 https://nckuhub.com`);
-}
-
-function sendCourseNotFoundMessage(sender) {
-    sendTextMessage(sender, "Ooops！找不到這門課唷，請再次確認是否依照格式輸入，記得前面要加上 # 或 @ 符號喔 😄\n\n" +
-        "追蹤餘額格式：「#課程名稱」\n「#選課序號」\n「#課程名稱（$系所）（%老師名）」\n\n 追蹤餘額範例：「#微積分」\n「#H3005」\n「#微積分 $工資 %王哈伯」\n\n" +
-        "尋找教室格式：\n「@課程名稱」\n「@選課序號」\n「@課程名稱（$系所）（%老師名）」\n\n" +
-        "尋找教室範例：\n「@微積分」\n「@H3005」\n「@微積分 $工資 %王哈伯」\n\n請依以上格式再次輸入，讓 NCKU HUB為你追蹤課程餘額 / 尋找上課教室 🏃🏃🏃");
 }
 
 module.exports = {
