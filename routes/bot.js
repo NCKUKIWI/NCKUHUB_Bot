@@ -401,6 +401,7 @@ router.post('/', function (req, res) {
                                     }
                                     courseNamePlace = courseNamePlace[0].replace(/[\uff20|@|\s]/g, "");
                                     sendCoursePlaceByName(sender, courseNamePlace, dpt, teacher); //透過課程名稱搜尋並傳送課程地點
+                                    return;
                                 }
                                 var courseSerialPlace = text.match(/^[\uff20|@][a-zA-Z0-9]{5}/i); //檢查 @選課序號
                                 if (courseSerialPlace) {
@@ -410,6 +411,7 @@ router.post('/', function (req, res) {
                                     }
                                     courseSerialPlace = courseSerialPlace[0].replace(/[\uff20|@|\s]/g, "");
                                     sendCoursePlaceById(sender, courseSerialPlace); //透過課程序號搜尋並傳送課程地點
+                                    return;
                                 }
                                 var courseNameFollow = text.match(/^[#|\uff03][\u4e00-\u9fa5]{1,}/i); //檢查 #課程名稱
                                 if (courseNameFollow) {
@@ -419,6 +421,7 @@ router.post('/', function (req, res) {
                                     }
                                     courseNameFollow = courseNameFollow[0].replace(/[#|\uff03|\s]/g, "");
                                     sendFollowCourseByName(sender, courseNameFollow, dpt, teacher); //透過課程名稱搜尋並傳送追蹤課程按鈕
+                                    return;
                                 }
                                 var courseSerialFollow = text.match(/^[#|\uff03][a-zA-Z0-9]{5}/i); //檢查 #選課序號
                                 if (courseSerialFollow) {
@@ -428,6 +431,7 @@ router.post('/', function (req, res) {
                                     }
                                     courseSerialFollow = courseSerialFollow[0].replace(/[#|\uff03|\s]/g, "");
                                     sendFollowCourseById(sender, courseSerialFollow); //透過選課序號搜尋並傳送追蹤課程按鈕
+                                    return;
                                 }
                                 if (text[0] == "#" || text[0] == "@") {
                                     sendCourseNotFoundMessage(sender);
@@ -523,7 +527,6 @@ function sendCoursePlaceByName(sender, name, dpt, teacher) {
 					postback.courseIdInfo.generator(aCourse => aCourse.id)));
 		} else {
             sendCourseNotFoundMessage(sender);
-			sendGoodbye(sender);
 		}
 	});
 }
@@ -537,7 +540,6 @@ function sendCoursePlaceById(sender, serial) {
 			sendCourseInfo(sender, course[0].id);
 		} else {
             sendCourseNotFoundMessage(sender);
-			sendGoodbye(sender);
 		}
 	});
 }
@@ -584,7 +586,6 @@ function sendFollowCourseByName(sender, name, dpt, teacher) {
 					postback.courseIdFollow.generator(aCourse => aCourse.id)));
 		} else {
             sendCourseNotFoundMessage(sender);
-			sendGoodbye(sender);
 		}
 	});
 }
@@ -597,7 +598,6 @@ function sendFollowCourseById(sender, serial) {
 			addFollowCourse(sender, course[0].id);
 		} else {
             sendCourseNotFoundMessage(sender);
-			sendGoodbye(sender);
 		}
 	});
 }
@@ -732,7 +732,6 @@ function searchCourseByName(sender, name) {
 					postback.courseIdAsk.generator(aCourse => aCourse.選課序號)));
 		} else {
             sendCourseNotFoundMessage(sender);
-			sendGoodbye(sender);
 		}
 	});
 }
@@ -754,7 +753,6 @@ function searchCourseByTeacher(sender, teacher) {
 					postback.courseIdAsk.generator(aCourse => aCourse.選課序號)));
 		} else {
             sendCourseNotFoundMessage(sender);
-			sendGoodbye(sender);
 		}
 	});
 }
@@ -778,7 +776,6 @@ function askPlaceOrFollow(sender, serial) {
 				]);
 		} else {
             sendCourseNotFoundMessage(sender);
-			sendGoodbye(sender);
 		}
 	});
 }
