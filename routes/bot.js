@@ -5,6 +5,7 @@ var config = require('../config');
 var router = express.Router();
 var dbsystem = require('../model/dba');
 
+const host = "https://bot.nckuhub.com";
 const apiVersion = "v3.1";
 const msg_url = `https://graph.facebook.com/${apiVersion}/me/messages`;
 const varifyDescriptionLink = "https://懶人包";
@@ -332,6 +333,11 @@ router.post('/', function (req, res) {
                     console.log(`[粉專私訊] 私訊者：${sender}`);
                     var text = event.message.text; //用戶傳送的訊息
                     console.log(`訊息：${text.replace(/\n/, "\\n")}`);
+                    if (text.indexOf("小幫手") != -1) {
+                        sendTextMessage(sender, "如需再次使用小幫手，請點選下方的選單點選你要使用的功能 👇🏻");
+                        sendImage(sender, host + "/assets/images/howToUse.png");
+                        return;
+                    }
                     db.select().field(["id"]).from("messenger_code").where("fb_id=", sender).run(function (code) {
                         if (code.length > 0) {
                             isVarify = true;
@@ -355,80 +361,75 @@ router.post('/', function (req, res) {
                                 }
                             });
                         } else {
-                            if (text.indexOf("小幫手") !== -1) {
-                                sendHello(sender);
+                            // var serial = text.replace(/[\s|\-]/g, "").match(/^[a-zA-Z][0-9]{4}/i);
+                            // if (serial) {
+                            //     if (courseSerialList.indexOf(serial[0].toUpperCase()) !== -1) {
+                            //         if (! isVarify) {
+                            //             sendNotVarify(sender, title);
+                            //             return;
+                            //         }
+                            //         askPlaceOrFollow(sender, serial[0]);
+                            //     }
+                            // } else if (courseNameList.indexOf(text) != -1) {
+                            //     if (! isVarify) {
+                            //         sendNotVarify(sender, title);
+                            //         return;
+                            //     }
+                            //     searchCourseByName(sender, text);
+                            // }
+                            var teacher = text.match(/[\%|\uff05][\u4e00-\u9fa5]{1,}/i); //檢查 %老師名稱
+                            var dpt = text.match(/[\$|\uff04][\u4e00-\u9fa5]{1,}/i); //檢查 $系所名稱
+                            if (dpt) {
+                                dpt = dpt[0].replace(/[\$|\uff04|\s]/g, ""); //過濾掉不該有的內容
+                            }
+                            if (teacher) {
+                                teacher = teacher[0].replace(/[\%|\uff05|\s]/g, "");
+                            }
+                            if (text.indexOf('$') == 0) {
+                                sendCourseNotFoundMessage(sender);
+                            } else if (text.indexOf('%') == 0) {
+                                if (! isVarify) {
+                                    sendNotVarify(sender, "搜尋課程");
+                                    return;
+                                }
+                                searchCourseByTeacher(sender, teacher);
                             } else {
-                                // var serial = text.replace(/[\s|\-]/g, "").match(/^[a-zA-Z][0-9]{4}/i);
-                                // if (serial) {
-                                //     if (courseSerialList.indexOf(serial[0].toUpperCase()) !== -1) {
-                                //         if (! isVarify) {
-                                //             sendNotVarify(sender, title);
-                                //             return;
-                                //         }
-                                //         askPlaceOrFollow(sender, serial[0]);
-                                //     }
-                                // } else if (courseNameList.indexOf(text) != -1) {
-                                //     if (! isVarify) {
-                                //         sendNotVarify(sender, title);
-                                //         return;
-                                //     }
-                                //     searchCourseByName(sender, text);
-                                // } else {
-                                    var teacher = text.match(/[\%|\uff05][\u4e00-\u9fa5]{1,}/i); //檢查 %老師名稱
-                                    var dpt = text.match(/[\$|\uff04][\u4e00-\u9fa5]{1,}/i); //檢查 $系所名稱
-                                    if (dpt) {
-                                        dpt = dpt[0].replace(/[\$|\uff04|\s]/g, ""); //過濾掉不該有的內容
+                                var courseNamePlace = text.match(/^[\uff20|@][\u4e00-\u9fa5]{1,}/i); //檢查 @課程名稱
+                                if (courseNamePlace) {
+                                    if (! isVarify) {
+                                        sendNotVarify(sender, "尋找上課教室");
+                                        return;
                                     }
-                                    if (teacher) {
-                                        teacher = teacher[0].replace(/[\%|\uff05|\s]/g, "");
+                                    courseNamePlace = courseNamePlace[0].replace(/[\uff20|@|\s]/g, "");
+                                    sendCoursePlaceByName(sender, courseNamePlace, dpt, teacher); //透過課程名稱搜尋並傳送課程地點
+                                }
+                                var courseSerialPlace = text.match(/^[\uff20|@][a-zA-Z0-9]{5}/i); //檢查 @選課序號
+                                if (courseSerialPlace) {
+                                    if (! isVarify) {
+                                        sendNotVarify(sender, "尋找上課教室");
+                                        return;
                                     }
-                                    if (text.indexOf('$') == 0) {
-                                        sendCourseNotFoundMessage(sender);
-                                    } else if (text.indexOf('%') == 0) {
-                                        if (! isVarify) {
-                                            sendNotVarify(sender, title);
-                                            return;
-                                        }
-                                        searchCourseByTeacher(sender, teacher);
-                                    } else {
-                                        var courseNamePlace = text.match(/^[\uff20|@][\u4e00-\u9fa5]{1,}/i); //檢查 @課程名稱
-                                        if (courseNamePlace) {
-                                            if (! isVarify) {
-                                                sendNotVarify(sender, title);
-                                                return;
-                                            }
-                                            courseNamePlace = courseNamePlace[0].replace(/[\uff20|@|\s]/g, "");
-                                            sendCoursePlaceByName(sender, courseNamePlace, dpt, teacher); //透過課程名稱搜尋並傳送課程地點
-                                        }
-                                        var courseSerialPlace = text.match(/^[\uff20|@][a-zA-Z0-9]{5}/i); //檢查 @選課序號
-                                        if (courseSerialPlace) {
-                                            if (! isVarify) {
-                                                sendNotVarify(sender, title);
-                                                return;
-                                            }
-                                            courseSerialPlace = courseSerialPlace[0].replace(/[\uff20|@|\s]/g, "");
-                                            sendCoursePlaceById(sender, courseSerialPlace); //透過課程序號搜尋並傳送課程地點
-                                        }
-                                        var courseNameFollow = text.match(/^[#|\uff03][\u4e00-\u9fa5]{1,}/i); //檢查 #課程名稱
-                                        if (courseNameFollow) {
-                                            if (! isVarify) {
-                                                sendNotVarify(sender, title);
-                                                return;
-                                            }
-                                            courseNameFollow = courseNameFollow[0].replace(/[#|\uff03|\s]/g, "");
-                                            sendFollowCourseByName(sender, courseNameFollow, dpt, teacher); //透過課程名稱搜尋並傳送追蹤課程按鈕
-                                        }
-                                        var courseSerialFollow = text.match(/^[#|\uff03][a-zA-Z0-9]{5}/i); //檢查 #選課序號
-                                        if (courseSerialFollow) {
-                                            if (! isVarify) {
-                                                sendNotVarify(sender, title);
-                                                return;
-                                            }
-                                            courseSerialFollow = courseSerialFollow[0].replace(/[#|\uff03|\s]/g, "");
-                                            sendFollowCourseById(sender, courseSerialFollow); //透過選課序號搜尋並傳送追蹤課程按鈕
-                                        }
+                                    courseSerialPlace = courseSerialPlace[0].replace(/[\uff20|@|\s]/g, "");
+                                    sendCoursePlaceById(sender, courseSerialPlace); //透過課程序號搜尋並傳送課程地點
+                                }
+                                var courseNameFollow = text.match(/^[#|\uff03][\u4e00-\u9fa5]{1,}/i); //檢查 #課程名稱
+                                if (courseNameFollow) {
+                                    if (! isVarify) {
+                                        sendNotVarify(sender, "新增餘額追蹤");
+                                        return;
                                     }
-                                // }
+                                    courseNameFollow = courseNameFollow[0].replace(/[#|\uff03|\s]/g, "");
+                                    sendFollowCourseByName(sender, courseNameFollow, dpt, teacher); //透過課程名稱搜尋並傳送追蹤課程按鈕
+                                }
+                                var courseSerialFollow = text.match(/^[#|\uff03][a-zA-Z0-9]{5}/i); //檢查 #選課序號
+                                if (courseSerialFollow) {
+                                    if (! isVarify) {
+                                        sendNotVarify(sender, "新增餘額追蹤");
+                                        return;
+                                    }
+                                    courseSerialFollow = courseSerialFollow[0].replace(/[#|\uff03|\s]/g, "");
+                                    sendFollowCourseById(sender, courseSerialFollow); //透過選課序號搜尋並傳送追蹤課程按鈕
+                                }
                             }
                         }
                     });
@@ -444,10 +445,8 @@ router.post('/', function (req, res) {
                         var title = event.postback.title;
                         if (payload == "開始使用") {
                             sendTextMessage(sender, "你好 👋\nNCKU HUB 小幫手的使命是幫助大家處理各種修課上的麻煩事，請點擊下方選單，選擇你需要的服務唷 ❗❗❗");
-                            sendTextMessage(sender, `提醒你，為了創造選課環境的正向循環，如欲使用「追蹤課程餘額」、「尋找上課教室」功能，需要請你先於 NCKU HUB 提供三門課程心得、完成小幫手解鎖唷 ❤\n\n解鎖說明 👉🏻${varifyDescriptionLink}\n提供心得 👉🏻 https://nckuhub.com\n\n完成填寫心得、取得驗證碼後，點擊下方選單即可開始使用囉 🙌🏻`);
-                            return;
-                        } else if (payload == "callagain") {
-                            sendHello(sender);
+                            sendTextMessage(sender, `提醒你，為了創造選課環境的正向循環，如欲使用「追蹤課程餘額」、「尋找上課教室」功能，需要請你先於 NCKU HUB 提供三門課程心得、完成小幫手解鎖唷 ❤\n\n解鎖說明 👉🏻${varifyDescriptionLink}\n提供心得 👉🏻 https://nckuhub.com\n\n完成填寫心得、取得驗證碼後，點擊下方選單即可開始使用囉 👇🏻`);
+                            sendImage(sender, host + "/assets/images/howToUse.png");
                             return;
                         } else if (payload == "cancelBroadcast") {
                             unsubscribeBroadcast(sender);
@@ -471,6 +470,11 @@ router.post('/', function (req, res) {
                         } else if (payload == "nckuhubFindClassroom") {
                             sendTextMessage(sender, "馬上為你尋找上課教室 👌\n\n請告訴我們課程名稱或選課序號，格式為「@微積分」或「@H3005」\n\n你也可以加上「$系所」、「%老師名」，來精準搜尋課程，例如「@微積分 $工資 %王哈伯」");
                             return;
+                        } else if (payload == "callAgain") {
+                            sendTextMessage(sender, "如需再次使用小幫手，請點選下方的選單點選你要使用的功能 👇🏻");
+                            sendImage(sender, host + "/assets/images/howToUse.png");
+                        } else if (payload == "cancelall") {
+                            cancelAllFollowCourse(sender);
                         } else if (courseIdFollow) {
                             courseIdFollow = postback.courseIdFollow.replacer(courseIdFollow[0]);
                             addFollowCourse(sender, courseIdFollow);
@@ -483,10 +487,6 @@ router.post('/', function (req, res) {
                         } else if (courseIdAsk) {
                             courseIdAsk = postback.courseIdAsk.replacer(courseIdAsk[0]);
                             askPlaceOrFollow(sender, courseIdAsk);
-                        } else if (event.postback.payload == "cancelall") {
-                            cancelAllFollowCourse(sender);
-                        } else if (event.postback.payload == "dontFollow") {
-                            sendGoodbye(sender);
                         } else {
                             sendTextMessage(sender, event.postback.payload);
                         }
@@ -692,8 +692,12 @@ function checkCoureseRemain() {
 }
 
 function sendNotify(course) {
-	var text = "餘額通知（" + course.serial + "）！\n\n" + course.content + "／" + course.teacher + "／" + course.time + "\n\n這門課有個餘額了！趕快去選吧 🏄🏄\n\n成大選課連結：https://goo.gl/o8zPZH";
-	sendTextMessage(course.fb_id, text);
+    var text = "餘額通知（" + course.serial + "）！\n\n" + course.content + "／" + course.teacher + "／" + course.time + "\n\n這門課有餘額了！趕快去選吧 🏄🏄";
+    sendLink(course.fb_id, {
+        "description": text,
+        "url": "https://goo.gl/o8zPZH",
+        "title": "查看成大地圖"
+    });
 	var db = new dbsystem();
 	db.update().table("follow").set({
 		hadNotify: 1
@@ -775,36 +779,23 @@ function askPlaceOrFollow(sender, serial) {
 	});
 }
 
-const helloMessage = genericTemplateGenerator("你好 👋👋 我是 NCKU HUB 新來的小幫手，請問需要什麼幫助嗎❓", [{
-		"type": "postback",
-		"title": "尋找上課地點",
-		"payload": "馬上為你尋找上課地點 😁😁\n\n請告訴我們課程名稱或是選課序號，例如「@微積分」或是「@h3001」\n\n你也可以加上「$系所 %老師名」，來精準搜尋課程，例如「@微積分 $工資 %侯世章」",
-	}, {
-		"type": "postback",
-		"title": "追蹤課程餘額",
-		"payload": "馬上為你追蹤課程餘額 😀😀\n\n請告訴我們課程名稱或是選課序號，例如「#微積分」或是「#h3001」\n\n你也可以加上「$系所 %老師名」，來精準搜尋課程，例如「#微積分 $工資 %侯世章」",
-	}, {
-		"type": "postback",
-		"title": "取消追蹤餘額",
-		"payload": "cancelfollow",
-	}
-]);
-
 function sendHello(sender) {
+    const helloMessage = "Hi";
 	return sendMessage(sender, helloMessage);
 }
 
-const goodbyeMessage = genericTemplateGenerator("感謝使用 🙏 希望有幫上你的忙！", [{
-	"type": "postback",
-	"title": "再次呼喚小幫手",
-	"payload": "callagain",
-}, {
-	"type": "postback",
-	"title": "用完了，謝謝！",
-	"payload": "不客氣，也謝謝你的使用 🙂",
-}]);
-
 function sendGoodbye(sender) {
+    const goodbyeMessage = genericTemplateGenerator("感謝使用 🙏 希望有幫上你的忙！", [
+        {
+            "type": "postback",
+            "title": "再次呼喚小幫手",
+            "payload": "callAgain"
+        }, {
+            "type": "postback",
+            "title": "用完了，謝謝！",
+            "payload": "不客氣，也謝謝你的使用 🙂"
+        }
+    ]);
 	setTimeout(function () {
 		sendMessage(sender, goodbyeMessage);
 	}, 2000);
@@ -915,6 +906,18 @@ function sendButtonsMessage(sender, txt, buttons) {
 function sendTextMessage(sender, text) {
 	return sendMessage(sender, {
 		text: text
+	});
+}
+
+function sendImage(sender, imageUrl) {
+    return sendMessage(sender, {
+        "attachment":{
+            "type": "image",
+            "payload":{
+              "url": imageUrl,
+              "is_reusable":true
+            }
+        }
 	});
 }
 
