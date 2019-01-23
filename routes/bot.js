@@ -325,11 +325,16 @@ router.post('/', function (req, res) {
 			});
 		} else if (anEntry.hasOwnProperty('messaging')) { // Messenger
 			anEntry.messaging.forEach(event => {
-                console.log(event);
-                console.log(event.message);
                 console.log(event.message.text);
                 console.log(event.message.is_echo);
-				var sender = event.sender.id; //使用者messenger id
+                var sender = event.sender.id; //使用者messenger id
+                var db = new dbsystem();
+                db.select().field(["id"]).from("messenger_code").where("code", event.message.text).run(function (code) {
+                    console.log(code);
+                    // db.update().table("follow").set({
+                    //     hadNotify: 0
+                    // }).where("id=", follow[i].id).run(function (result) {});
+                });
 				//先註解掉其他功能
 
 				// if (event.message && event.message.text && typeof event.message.is_echo === "undefined") {
