@@ -326,20 +326,35 @@ router.post('/', function (req, res) {
 			});
 		} else if (anEntry.hasOwnProperty('messaging')) { // Messenger
 			anEntry.messaging.forEach(event => {
-                console.log(event.message.text);
-                console.log(event.message.is_echo);
+                var isVarify = false;
+                console.log(event.message);
                 var sender = event.sender.id; //使用者messenger id
                 var db = new dbsystem();
-                db.select().field(["id"]).from("messenger_code").where("code=", event.message.text).run(function (code) {
-                    console.log(code);
+                //檢查用戶是否通過驗證
+                db.select().field(["id"]).from("messenger_code").where("fb_id=", sender).run(function (code) {
                     if (code.length > 0) {
-                        code = code[0];
-                        console.log(code);
-                        db.update().table("messenger_code").set({
-                            is_used: 1,
-                            fb_id: sender,
-                            updated_at: dayjs().format('YYYY-MM-DD HH:mm:ss')
-                        }).where("id=", code.id).run(function (result) {});
+                        isVarify = true;
+                    }
+                    console.log(isVarify);
+                    if (event.message && event.message.text && typeof event.message.is_echo === "undefined") {
+                        //未驗證然後輸入的為驗證碼
+                        if (!isVarify && event.message.text.length == 20 && event.message.text.substring(0, 7) == "nckuhub") {
+                            //找尋未用的驗證碼
+                            db.select().field(["id"]).from("messenger_code").where("is_used=", 0).where("code=", event.message.text).run(function (code) {
+                                if (code.length > 0) {
+                                    code = code[0];
+                                    db.update().table("messenger_code").set({
+                                        is_used: 1,
+                                        fb_id: sender,
+                                        updated_at: dayjs().format('YYYY-MM-DD HH:mm:ss')
+                                    }).where("id=", code.id).run(function (result) {
+                                        sendTextMessage(sender, "恭喜你成功解鎖小幫手！立即點擊下方選單，選擇你想要使用的服務吧 🙌🏻 🙌🏻 🙌🏻");
+                                    });
+                                } else {
+                                    sendTextMessage(sender, "Ooops！驗證未成功，會不會是驗證碼輸入錯了呢？\n請再次將你的驗證碼輸入在下方文字框，傳送給我們以進行解鎖唷 🔓🔑\n\n解鎖說明 👉🏻＿＿＿＿＿＿\n提供心得 👉🏻 https://nckuhub.com");
+                                }
+                            });
+                        }
                     }
                 });
 				//先註解掉其他功能
