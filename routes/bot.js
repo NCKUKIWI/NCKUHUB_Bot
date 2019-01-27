@@ -8,7 +8,7 @@ var dbsystem = require('../model/dba');
 const host = "https://bot.nckuhub.com";
 const apiVersion = "v3.1";
 const msg_url = `https://graph.facebook.com/${apiVersion}/me/messages`;
-const varifyDescriptionLink = "https://懶人包";
+const varifyDescriptionLink = "";//"解鎖說明 👉🏻https://懶人包\n";
 const token = config.fb.token;
 const disable = config.bot.disable;
 var disableSQL = '';
@@ -365,7 +365,7 @@ router.post('/', function (req, res) {
                                         sendImage(sender, host + "/assets/images/howToUse.png");
                                     });
                                 } else {
-                                    sendTextMessage(sender, `Ooops！驗證未成功，會不會是驗證碼輸入錯了呢？\n請再次將你的驗證碼輸入在下方文字框，傳送給我們以進行解鎖唷 🔓🔑\n\n解鎖說明 👉🏻${varifyDescriptionLink}\n提供心得 👉🏻 https://nckuhub.com`);
+                                    sendTextMessage(sender, `Ooops！驗證未成功，會不會是驗證碼輸入錯了呢？\n請再次將你的驗證碼輸入在下方文字框，傳送給我們以進行解鎖唷 🔓🔑\n\n${varifyDescriptionLink}提供心得 👉🏻 https://nckuhub.com`);
                                 }
                             });
                         } else {
@@ -461,7 +461,7 @@ router.post('/', function (req, res) {
                         var title = event.postback.title;
                         if (payload == "開始使用") {
                             sendTextMessage(sender, "你好 👋\nNCKU HUB 小幫手的使命是幫助大家處理各種修課上的麻煩事，請點擊下方選單，選擇你需要的服務唷 ❗❗❗", function(){
-                                sendTextMessage(sender, `提醒你，為了創造選課環境的正向循環，如欲使用「追蹤課程餘額」、「尋找上課教室」功能，需要請你先於 NCKU HUB 提供三門課程心得、完成小幫手解鎖唷 ❤\n\n解鎖說明 👉🏻${varifyDescriptionLink}\n提供心得 👉🏻 https://nckuhub.com\n\n完成填寫心得、取得驗證碼後，點擊下方選單即可開始使用囉 👇🏻`, function(){
+                                sendTextMessage(sender, `提醒你，為了創造選課環境的正向循環，如欲使用「追蹤課程餘額」、「尋找上課教室」功能，需要請你先於 NCKU HUB 提供三門課程心得、完成小幫手解鎖唷 ❤\n\n${varifyDescriptionLink}提供心得 👉🏻 https://nckuhub.com\n\n完成填寫心得、取得驗證碼後，點擊下方選單即可開始使用囉 👇🏻`, function(){
                                     sendImage(sender, host + "/assets/images/howToUse.png");
                                 });
                             });
@@ -877,7 +877,7 @@ function genericTemplateGenerator(subtitle, buttons) {
 }
 
 function sendNotVarify(sender, func) {
-    sendTextMessage(sender, "「" + func + `」目前為鎖定狀態 🔐\n請將你的驗證碼輸入在下方文字框，傳送給我們以進行解鎖唷 🔓🔑\n\n解鎖說明 👉🏻${varifyDescriptionLink}\n提供心得 👉🏻 https://nckuhub.com`);
+    sendTextMessage(sender, "「" + func + `」目前為鎖定狀態 🔐\n請將你的驗證碼輸入在下方文字框，傳送給我們以進行解鎖唷 🔓🔑\n\n${varifyDescriptionLink}提供心得 👉🏻 https://nckuhub.com`);
 }
 
 function sendCourseNotFoundMessage(sender) {
