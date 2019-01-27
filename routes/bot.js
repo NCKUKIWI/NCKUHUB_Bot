@@ -275,7 +275,7 @@ function cmtPrivateReply(response_msg, cid) {
  */
 
 router.get('/', function (req, res) {
-	if (req.query['hub.verify_token'] === 'testnckuhub') {
+	if (req.query['hub.verify_token'] === config.fb.webhook) {
 		res.send(req.query['hub.challenge']);
 	} else {
 		res.send('Error, wrong token');
