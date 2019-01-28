@@ -8,7 +8,7 @@ var dbsystem = require('../model/dba');
 const host = "https://bot.nckuhub.com";
 const apiVersion = "v3.1";
 const msg_url = `https://graph.facebook.com/${apiVersion}/me/messages`;
-const varifyDescriptionLink = "解鎖說明 👉🏻 bit.ly/hub_help\n";
+const varifyDescriptionLink = "解鎖說明 👉🏻 bit.ly/hubhelp\n";
 const token = config.fb.token;
 const disable = config.bot.disable;
 var disableSQL = '';
@@ -877,7 +877,7 @@ function genericTemplateGenerator(subtitle, buttons) {
 }
 
 function sendNotVarify(sender) {
-    sendTextMessage(sender, "你選擇的功能目前鎖定中 🔐\n\n欲使用本功能，請將你的驗證碼輸入在下方文字框，傳送給我們以進行解鎖唷 🔓🔑\n\n解鎖說明 👉 bit.ly/hub_help\n提供心得 👉🏻 nckuhub.com");
+    sendTextMessage(sender, "你選擇的功能目前鎖定中 🔐\n\n欲使用本功能，請將你的驗證碼輸入在下方文字框，傳送給我們以進行解鎖唷 🔓🔑\n\n解鎖說明 👉 bit.ly/hubhelp\n提供心得 👉🏻 nckuhub.com");
     // sendTextMessage(sender, "「" + func + `」目前為鎖定狀態 🔐\n請將你的驗證碼輸入在下方文字框，傳送給我們以進行解鎖唷 🔓🔑\n\n${varifyDescriptionLink}提供心得 👉🏻 nckuhub.com`);
 }
 
