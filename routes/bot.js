@@ -365,7 +365,7 @@ router.post('/', function (req, res) {
                                         sendImage(sender, host + "/assets/images/howToUse.png");
                                     });
                                 } else {
-                                    sendTextMessage(sender, `Ooops！驗證未成功，會不會是驗證碼輸入錯了呢？\n請再次將你的驗證碼輸入在下方文字框，傳送給我們以進行解鎖唷 🔓🔑\n\n${varifyDescriptionLink}解鎖說明 👉http://bit.ly/hub_helper\n提供心得 👉🏻 https://nckuhub.com`);
+                                    sendTextMessage(sender, `Ooops！驗證未成功，會不會是驗證碼輸入錯了呢？\n請再次將你的驗證碼輸入在下方文字框，傳送給我們以進行解鎖唷 🔓🔑\n\n${varifyDescriptionLink}提供心得 👉🏻 https://nckuhub.com`);
                                 }
                             });
                         } else {
@@ -877,7 +877,7 @@ function genericTemplateGenerator(subtitle, buttons) {
 }
 
 function sendNotVarify(sender) {
-    sendTextMessage(sender, "你選擇的功能目前鎖定中 🔐\n\n欲使用本功能，請將你的驗證碼輸入在下方文字框，傳送給我們以進行解鎖唷 🔓🔑\n\n提供心得 👉🏻 https://nckuhub.com");
+    sendTextMessage(sender, "你選擇的功能目前鎖定中 🔐\n\n欲使用本功能，請將你的驗證碼輸入在下方文字框，傳送給我們以進行解鎖唷 🔓🔑\n\n${varifyDescriptionLink}提供心得 👉🏻 https://nckuhub.com");
     // sendTextMessage(sender, "「" + func + `」目前為鎖定狀態 🔐\n請將你的驗證碼輸入在下方文字框，傳送給我們以進行解鎖唷 🔓🔑\n\n${varifyDescriptionLink}提供心得 👉🏻 https://nckuhub.com`);
 }
 
