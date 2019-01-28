@@ -877,8 +877,8 @@ function genericTemplateGenerator(subtitle, buttons) {
 }
 
 function sendNotVarify(sender) {
-    sendTextMessage(sender, "你選擇的功能目前鎖定中 🔐\n\n欲使用本功能，請將你的驗證碼輸入在下方文字框，傳送給我們以進行解鎖唷 🔓🔑\n\n${varifyDescriptionLink}提供心得 👉🏻 https://nckuhub.com");
-    // sendTextMessage(sender, "「" + func + `」目前為鎖定狀態 🔐\n請將你的驗證碼輸入在下方文字框，傳送給我們以進行解鎖唷 🔓🔑\n\n${varifyDescriptionLink}提供心得 👉🏻 https://nckuhub.com`);
+    // sendTextMessage(sender, "你選擇的功能目前鎖定中 🔐\n\n欲使用本功能，請將你的驗證碼輸入在下方文字框，傳送給我們以進行解鎖唷 🔓🔑\n\n${varifyDescriptionLink}提供心得 👉🏻 https://nckuhub.com");
+    sendTextMessage(sender, "「" + func + `」目前為鎖定狀態 🔐\n請將你的驗證碼輸入在下方文字框，傳送給我們以進行解鎖唷 🔓🔑\n\n${varifyDescriptionLink}提供心得 👉🏻 https://nckuhub.com`);
 }
 
 function sendCourseNotFoundMessage(sender) {
