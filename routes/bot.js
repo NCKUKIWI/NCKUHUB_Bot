@@ -373,7 +373,7 @@ router.post('/', function (req, res) {
                             if (serial) {
                                 if (courseSerialList.indexOf(serial[0].toUpperCase()) !== -1) {
                                     if (! isVarify) {
-                                        sendNotVarify(sender, "搜尋課程");
+                                        sendNotVarify(sender);
                                         return;
                                     }
                                     askPlaceOrFollow(sender, serial[0]);
@@ -381,7 +381,7 @@ router.post('/', function (req, res) {
                                 }
                             } else if (courseNameList.indexOf(text.replace(/\s/g, "")) != -1) {
                                 if (! isVarify) {
-                                    sendNotVarify(sender, "搜尋課程");
+                                    sendNotVarify(sender);
                                     return;
                                 }
                                 text = text.replace(/一|二|三|四|五|六|七|八|九|\(|\)|\（|\）|\s/g, "");
@@ -398,7 +398,7 @@ router.post('/', function (req, res) {
                             }
                             if (text.indexOf('%') == 0) {
                                 if (! isVarify) {
-                                    sendNotVarify(sender, "搜尋課程");
+                                    sendNotVarify(sender);
                                     return;
                                 }
                                 searchCourseByTeacher(sender, teacher);
@@ -406,7 +406,7 @@ router.post('/', function (req, res) {
                                 var courseNamePlace = text.match(/^[\uff20|@][\u4e00-\u9fa5]{1,}/i); //檢查 @課程名稱
                                 if (courseNamePlace) {
                                     if (! isVarify) {
-                                        sendNotVarify(sender, "尋找上課教室");
+                                        sendNotVarify(sender);
                                         return;
                                     }
                                     courseNamePlace = courseNamePlace[0].replace(/[\uff20|@|\s]/g, "");
@@ -416,7 +416,7 @@ router.post('/', function (req, res) {
                                 var courseSerialPlace = text.match(/^[\uff20|@][a-zA-Z0-9]{5}/i); //檢查 @選課序號
                                 if (courseSerialPlace) {
                                     if (! isVarify) {
-                                        sendNotVarify(sender, "尋找上課教室");
+                                        sendNotVarify(sender);
                                         return;
                                     }
                                     courseSerialPlace = courseSerialPlace[0].replace(/[\uff20|@|\s]/g, "");
@@ -426,7 +426,7 @@ router.post('/', function (req, res) {
                                 var courseNameFollow = text.match(/^[#|\uff03][\u4e00-\u9fa5]{1,}/i); //檢查 #課程名稱
                                 if (courseNameFollow) {
                                     if (! isVarify) {
-                                        sendNotVarify(sender, "新增餘額追蹤");
+                                        sendNotVarify(sender);
                                         return;
                                     }
                                     courseNameFollow = courseNameFollow[0].replace(/[#|\uff03|\s]/g, "");
@@ -436,7 +436,7 @@ router.post('/', function (req, res) {
                                 var courseSerialFollow = text.match(/^[#|\uff03][a-zA-Z0-9]{5}/i); //檢查 #選課序號
                                 if (courseSerialFollow) {
                                     if (! isVarify) {
-                                        sendNotVarify(sender, "新增餘額追蹤");
+                                        sendNotVarify(sender);
                                         return;
                                     }
                                     courseSerialFollow = courseSerialFollow[0].replace(/[#|\uff03|\s]/g, "");
@@ -472,7 +472,7 @@ router.post('/', function (req, res) {
                         }
                         //以下為需要解鎖功能
                         if (! isVarify) {
-                            sendNotVarify(sender, title);
+                            sendNotVarify(sender);
                             return;
                         }
                         var courseIdFollow = postback.courseIdFollow.matcher(event.postback.payload); //抓payload中的 course_id 用來追蹤課程
@@ -876,8 +876,9 @@ function genericTemplateGenerator(subtitle, buttons) {
 	};
 }
 
-function sendNotVarify(sender, func) {
-    sendTextMessage(sender, "「" + func + `」目前為鎖定狀態 🔐\n請將你的驗證碼輸入在下方文字框，傳送給我們以進行解鎖唷 🔓🔑\n\n${varifyDescriptionLink}提供心得 👉🏻 https://nckuhub.com`);
+function sendNotVarify(sender) {
+    sendTextMessage(sender, "你選擇的功能目前鎖定中 🔐\n\n欲使用本功能，請將你的驗證碼輸入在下方文字框，傳送給我們以進行解鎖唷 🔓🔑\n\n提供心得 👉🏻 https://nckuhub.com");
+    // sendTextMessage(sender, "「" + func + `」目前為鎖定狀態 🔐\n請將你的驗證碼輸入在下方文字框，傳送給我們以進行解鎖唷 🔓🔑\n\n${varifyDescriptionLink}提供心得 👉🏻 https://nckuhub.com`);
 }
 
 function sendCourseNotFoundMessage(sender) {
