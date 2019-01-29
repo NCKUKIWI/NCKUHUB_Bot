@@ -460,11 +460,7 @@ router.post('/', function (req, res) {
                         var payload = event.postback.payload;
                         var title = event.postback.title;
                         if (payload == "開始使用") {
-                            sendTextMessage(sender, "你好 👋\nNCKU HUB 小幫手的使命是幫助大家處理各種修課上的麻煩事，請點擊下方選單，選擇你需要的服務唷 ❗❗❗", function(){
-                                sendTextMessage(sender, `提醒你，為了創造選課環境的正向循環，如欲使用「追蹤課程餘額」、「尋找上課教室」功能，需要請你先於 NCKU HUB 提供三門課程心得、完成小幫手解鎖唷 ❤\n\n${varifyDescriptionLink}提供心得 👉🏻 nckuhub.com\n\n完成填寫心得、取得驗證碼後，點擊下方選單即可開始使用囉 👇🏻`, function(){
-                                    sendImage(sender, host + "/assets/images/howToUse.png");
-                                });
-                            });
+                            sendTextMessage(sender, "歡迎你的使用 🎉\n\nNCKU HUB 小幫手的使命是幫大家處理各種選課麻煩事，在開始使用之前，需請你閱讀解鎖說明，並完成心得填寫 🙌🏻\n\n解鎖說明 👉🏻 bit.ly/hubhelp\n提供心得 👉🏻 nckuhub.com\n\n完成填寫心得、取得驗證碼後，請在下方輸入驗證碼以開始使用 👇🏻");
                             return;
                         } else if (payload == "cancelBroadcast") {
                             unsubscribeBroadcast(sender);
@@ -480,13 +476,13 @@ router.post('/', function (req, res) {
                         var courseIdInfo = postback.courseIdInfo.matcher(event.postback.payload); //抓payload中的 course_id 用來傳送單一課程詳細資訊
                         var courseIdAsk = postback.courseIdAsk.matcher(event.postback.payload);
                         if (payload == "nckuhubFollow") {
-                            sendTextMessage(sender, "馬上為你追蹤課程餘額 👌\n\n請告訴我們課程名稱或選課序號，格式為「#微積分」或「#H3005」\n\n你也可以加上「$系所」、「%老師名」，來精準搜尋課程，例如「#微積分 $工資 %王哈伯」\n\n－\n\n⚠️ 本功能無法保證 100% 零延遲，NCKU HUB 並不會為各位的選課結果負責。");
+                            sendTextMessage(sender, "馬上為你追蹤課程餘額 👌\n\n請輸入「完整課程名稱」或「選課序號」，格式為「#微積分」或「#H3005」\n\n你也可以加上「$系所」、「%老師名」，來精準搜尋課程，例如「#微積分 $工資 %王哈伯」\n\n－\n\n⚠️ 本功能無法保證 100% 零延遲，NCKU HUB 並不會為各位的選課結果負責。");
                             return;
                         } else if (payload == "nckuhubDeleteFollow") {
                             sendDeleteFollowMenu(sender);
                             return;
                         } else if (payload == "nckuhubFindClassroom") {
-                            sendTextMessage(sender, "馬上為你尋找上課教室 👌\n\n請告訴我們課程名稱或選課序號，格式為「@微積分」或「@H3005」\n\n你也可以加上「$系所」、「%老師名」，來精準搜尋課程，例如「@微積分 $工資 %王哈伯」");
+                            sendTextMessage(sender, "馬上為你尋找上課教室 👌\n\n請輸入「完整課程名稱」或「選課序號」，格式為「@微積分」或「@H3005」\n\n你也可以加上「$系所」、「%老師名」，來精準搜尋課程，例如「@微積分 $工資 %王哈伯」");
                             return;
                         } else if (payload == "thankYou") {
                             sendTextMessage(sender, "不客氣，也謝謝你的使用 🙂");
@@ -565,7 +561,7 @@ function sendCourseInfo(sender, course_id) {
 			url = "http://course-query.acad.ncku.edu.tw/qry/qry001.php?dept_no=" + course[0].系號;
 			title = "點我查看上課地點";
 		} else {
-			text += "\n\n上課地點在「" + course[0].教室.replace(/\s/g, "") + "」唷！";
+			text += "\n\n上課地點在「" + course[0].教室.replace(/\s/g, "") + "」唷 🏃🏃";
 			url = "http://www.stat.ncku.edu.tw/workshop/information/map_NCKUPlan.asp";
 			title = "查看成大地圖";
 		}
@@ -619,7 +615,7 @@ function addFollowCourse(sender, course_id) {
             db.select().field("*").from("follow").where("course_id=", course_id).where("fb_id=", sender).run(function (follow) {
                 var text;
                 if (follow.length < 1) {
-                    text = "你選擇的課程是：\n\n" + course[0].系所名稱.replace(/[A-Z0-9]/g, "") + "／" + course[0].課程名稱.replace(/[（|）|\s]/g, "") + "／" + course[0].老師.replace(/\s/g, "") + "／" + course[0].時間 + "\n\n" + "已為你設定追蹤，有餘額的時候會私訊你 👌 請抱著期待又怕受傷害的心情等候 🙌🙌";
+                    text = "你選擇的課程是：\n\n" + course[0].系所名稱.replace(/[A-Z0-9]/g, "") + "／" + course[0].課程名稱.replace(/[（|）|\s]/g, "") + "／" + course[0].老師.replace(/\s/g, "") + "／" + course[0].時間 + "\n\n" + "已為你設定餘額追蹤，有餘額的時候會私訊通知你 👌";
                     var data = {
                         course_id: course_id,
                         fb_id: sender,
@@ -705,7 +701,7 @@ function checkCoureseRemain() {
 }
 
 function sendNotify(course) {
-    var text = "餘額通知（" + course.serial + "）！\n\n" + course.content + "／" + course.teacher + "／" + course.time + "\n\n這門課有餘額了！趕快去選吧 🏄🏄";
+    var text = "餘額通知（" + course.serial + "）！\n\n" + course.content + "／" + course.teacher + "／" + course.time + "\n\n恭喜，這門課出現餘額了！\n趕快去選吧 🏄 🏄";
     sendLink(course.fb_id, {
         "description": text,
         "url": "https://goo.gl/o8zPZH",
@@ -877,13 +873,12 @@ function genericTemplateGenerator(subtitle, buttons) {
 }
 
 function sendNotVarify(sender) {
-    sendTextMessage(sender, "你選擇的功能目前鎖定中 🔐\n\n欲使用本功能，請將你的驗證碼輸入在下方文字框，傳送給我們以進行解鎖唷 🔓🔑\n\n解鎖說明 👉 bit.ly/hubhelp\n提供心得 👉🏻 nckuhub.com");
-    // sendTextMessage(sender, "「" + func + `」目前為鎖定狀態 🔐\n請將你的驗證碼輸入在下方文字框，傳送給我們以進行解鎖唷 🔓🔑\n\n${varifyDescriptionLink}提供心得 👉🏻 nckuhub.com`);
+    sendTextMessage(sender, "你選擇的功能鎖定中 🔐\n\n欲使用本功能，請在下方文字框輸入你的驗證碼，以進行解鎖唷 🔓🔑\n\n解鎖說明 👉🏻 bit.ly/hubhelp\n提供心得 👉🏻 nckuhub.com");
 }
 
 function sendCourseNotFoundMessage(sender) {
     sendTextMessage(sender, "Ooops！找不到這門課，請確認是否依照格式輸入，記得前面要加上 # 或 @ 符號喔 😄\n\n－\n\n" +
-        "追蹤餘額格式：「#課程名稱」\n「#選課序號」\n「#課程名稱 $系所 %老師」\n\n追蹤餘額範例：「#微積分」\n「#H3005」\n「#微積分 $工資 %王哈伯」\n\n－\n\n" +
+        "追蹤餘額格式：\n「#課程名稱」\n「#選課序號」\n「#課程名稱 $系所 %老師」\n\n追蹤餘額範例：\n「#微積分」\n「#H3005」\n「#微積分 $工資 %王哈伯」\n\n－\n\n" +
         "尋找教室格式：\n「@課程名稱」\n「@選課序號」\n「@課程名稱 $系所 %老師」\n\n尋找教室範例：\n「@微積分」\n「@H3005」\n「@微積分 $工資 %王哈伯」\n\n－\n\n" +
         "請依以上格式再次輸入，讓 NCKU HUB 為你追蹤課程餘額、尋找上課教室 🏃🏃🏃");
 }
