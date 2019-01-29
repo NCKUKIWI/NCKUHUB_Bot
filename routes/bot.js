@@ -1,6 +1,7 @@
 var express = require('express');
 var request = require('request');
 var dayjs = require('dayjs');
+var helpler = require('../helper');
 var config = require('../config');
 var router = express.Router();
 var dbsystem = require('../model/dba');
@@ -338,7 +339,7 @@ router.post('/', function (req, res) {
                 //使用者輸入
                 if (event.message && event.message.text && typeof event.message.is_echo === "undefined") {
                     console.log(`[粉專私訊] 私訊者：${sender}`);
-                    var text = event.message.text; //用戶傳送的訊息
+                    var text = helpler.fullChar2halfChar(event.message.text); //用戶傳送的訊息
                     console.log(`訊息：${text.replace(/\n/, "\\n")}`);
                     if (text.indexOf("小幫手") != -1) {
                         sendTextMessage(sender, "如需再次使用小幫手，請點選下方的選單點選你要使用的功能 👇🏻");
