@@ -228,7 +228,7 @@ function unsubscribeBroadcast(sender) {
 			user: sender
 		}
 	});
-	sendTextMessage(sender, "成功！你以後將不會再收到NCKUHUB的廣播訊息！");
+	sendTextMessage(sender, "取消訂閱成功！你將不會再收到 NCKU HUB 的廣播訊息！");
 }
 
 /**
