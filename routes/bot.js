@@ -635,7 +635,7 @@ function addFollowCourse(sender, course_id) {
                         db.insert().into("follow_copy").set(data).run(function (result) {}); // for record
                     });
                 } else {
-                    text = "你選擇的課程是：\n\n" + course[0].系所名稱.replace(/[A-Z0-9]/g, "") + "／" + course[0].課程名稱.replace(/[（|）|\s]/g, "") + "／" + course[0].老師.replace(/\s/g, "") + "／" + course[0].時間 + "\n\n" + noExtra + "已經為你設定過追蹤囉！";
+                    text = "你選擇的課程是：\n\n" + course[0].系所名稱.replace(/[A-Z0-9]/g, "") + "／" + course[0].課程名稱.replace(/[（|）|\s]/g, "") + "／" + course[0].老師.replace(/\s/g, "") + "／" + course[0].時間 + "\n\n" + noExtra + "你已經在追蹤這門課了噢 😎";
                 }
                 sendTextMessage(sender, text);
                 sendGoodbye(sender);
