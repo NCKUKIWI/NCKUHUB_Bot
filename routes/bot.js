@@ -338,7 +338,7 @@ router.post('/', function (req, res) {
                 //檢查用戶是否通過驗證
                 //使用者輸入
                 if(config.status == 0){
-                	sendFuncCloseMsg();
+                	sendFuncCloseMsg(sender);
                 }
                 else if (event.message && event.message.text && typeof event.message.is_echo === "undefined") {
                     console.log(`[粉專私訊] 私訊者：${sender}`);
