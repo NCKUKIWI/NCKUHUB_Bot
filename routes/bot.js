@@ -337,10 +337,11 @@ router.post('/', function (req, res) {
                 var db = new dbsystem();
                 //檢查用戶是否通過驗證
                 //使用者輸入
-                if(config.status == 0){
-                	sendFuncCloseMsg(sender);
-                }
-                else if (event.message && event.message.text && typeof event.message.is_echo === "undefined") {
+
+                if (event.message && event.message.text && typeof event.message.is_echo === "undefined") {
+	                if(config.status == 0){
+	                	sendFuncCloseMsg(sender);
+	                }
                     console.log(`[粉專私訊] 私訊者：${sender}`);
                     var text = helpler.fullChar2halfChar(event.message.text); //用戶傳送的訊息
                     console.log(`訊息：${text.replace(/\n/, "\\n")}`);
@@ -460,6 +461,9 @@ router.post('/', function (req, res) {
                         }
                     });
                 } else if (event.postback) {  //點擊我們提供的按鈕
+	                if(config.status == 0){
+	                	sendFuncCloseMsg(sender);
+	                }
                     console.log(`[粉專按鈕] 點擊者：${sender}`);
                     console.log("按鈕payload: " + event.postback.payload);
                     db.select().field(["id"]).from("messenger_code").where("fb_id=", sender).run(function (code) {
