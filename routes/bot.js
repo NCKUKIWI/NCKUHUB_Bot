@@ -337,7 +337,10 @@ router.post('/', function (req, res) {
                 var db = new dbsystem();
                 //檢查用戶是否通過驗證
                 //使用者輸入
-                if (event.message && event.message.text && typeof event.message.is_echo === "undefined") {
+                if(config.status == 0){
+                	sendFuncCloseMsg();
+                }
+                else if (event.message && event.message.text && typeof event.message.is_echo === "undefined") {
                     console.log(`[粉專私訊] 私訊者：${sender}`);
                     var text = helpler.fullChar2halfChar(event.message.text); //用戶傳送的訊息
                     console.log(`訊息：${text.replace(/\n/, "\\n")}`);
@@ -809,7 +812,7 @@ function sendDisableMsg(sender, dept_no) {
 }
 
 function sendFuncCloseMsg(sender) {
-	sendTextMessage(sender, `目前功能正在維護中～ 敬啟期待！`);
+	sendTextMessage(sender, `💤 目前非選課期間，小幫手沈睡中。本功能將在選課期間重新開放使用唷 ❗️`);
 }
 
 /**
