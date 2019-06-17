@@ -341,6 +341,7 @@ router.post('/', function (req, res) {
                 if (event.message && event.message.text && typeof event.message.is_echo === "undefined") {
 	                if(config.status == 0){
 	                	sendFuncCloseMsg(sender);
+	                	return;
 	                }
                     console.log(`[粉專私訊] 私訊者：${sender}`);
                     var text = helpler.fullChar2halfChar(event.message.text); //用戶傳送的訊息
@@ -463,6 +464,7 @@ router.post('/', function (req, res) {
                 } else if (event.postback) {  //點擊我們提供的按鈕
 	                if(config.status == 0){
 	                	sendFuncCloseMsg(sender);
+	                	return;
 	                }
                     console.log(`[粉專按鈕] 點擊者：${sender}`);
                     console.log("按鈕payload: " + event.postback.payload);
