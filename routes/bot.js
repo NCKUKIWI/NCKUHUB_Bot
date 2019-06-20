@@ -339,10 +339,6 @@ router.post('/', function (req, res) {
                 //使用者輸入
 
                 if (event.message && event.message.text && typeof event.message.is_echo === "undefined") {
-	                if(config.status == 0){
-	                	sendFuncCloseMsg(sender);
-	                	return;
-	                }
                     console.log(`[粉專私訊] 私訊者：${sender}`);
                     var text = helpler.fullChar2halfChar(event.message.text); //用戶傳送的訊息
                     console.log(`訊息：${text.replace(/\n/, "\\n")}`);
@@ -351,6 +347,10 @@ router.post('/', function (req, res) {
                         sendImage(sender, host + "/assets/images/howToUse.png");
                         return;
                     } else if (text == "新增餘額追蹤") {
+					    if(config.status == 0){
+					    	sendFuncCloseMsg(sender);
+					    	return;
+					    } // 未開放情況
                         sendTextMessage(sender, "馬上為你追蹤課程餘額 👌\n\n請輸入「完整課程名稱」或「選課序號」，格式為「#微積分」或「#H3005」\n\n你也可以加上「$系所」、「%老師名」，來精準搜尋課程，例如「#微積分 $工資 %王哈伯」\n\n－\n\n⚠️ 本功能無法保證 100% 零延遲，NCKU HUB 並不會為各位的選課結果負責。");
                         return;
                     } else if (text == "尋找上課教室") {
@@ -462,10 +462,6 @@ router.post('/', function (req, res) {
                         }
                     });
                 } else if (event.postback) {  //點擊我們提供的按鈕
-	                if(config.status == 0){
-	                	sendFuncCloseMsg(sender);
-	                	return;
-	                }
                     console.log(`[粉專按鈕] 點擊者：${sender}`);
                     console.log("按鈕payload: " + event.postback.payload);
                     db.select().field(["id"]).from("messenger_code").where("fb_id=", sender).run(function (code) {
@@ -492,6 +488,10 @@ router.post('/', function (req, res) {
                         var courseIdInfo = postback.courseIdInfo.matcher(event.postback.payload); //抓payload中的 course_id 用來傳送單一課程詳細資訊
                         var courseIdAsk = postback.courseIdAsk.matcher(event.postback.payload);
                         if (payload == "nckuhubFollow") {
+						    if(config.status == 0){
+						    	sendFuncCloseMsg(sender);
+						    	return;
+						    } // 未開放情況
                             sendTextMessage(sender, "馬上為你追蹤課程餘額 👌\n\n請輸入「完整課程名稱」或「選課序號」，格式為「#微積分」或「#H3005」\n\n你也可以加上「$系所」、「%老師名」，來精準搜尋課程，例如「#微積分 $工資 %王哈伯」\n\n－\n\n⚠️ 本功能無法保證 100% 零延遲，NCKU HUB 並不會為各位的選課結果負責。");
                             return;
                         } else if (payload == "nckuhubDeleteFollow") {
