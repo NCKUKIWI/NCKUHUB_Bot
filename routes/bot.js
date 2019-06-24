@@ -495,6 +495,10 @@ router.post('/', function (req, res) {
                             sendTextMessage(sender, "馬上為你追蹤課程餘額 👌\n\n請輸入「完整課程名稱」或「選課序號」，格式為「#微積分」或「#H3005」\n\n你也可以加上「$系所」、「%老師名」，來精準搜尋課程，例如「#微積分 $工資 %王哈伯」\n\n－\n\n⚠️ 本功能無法保證 100% 零延遲，NCKU HUB 並不會為各位的選課結果負責。");
                             return;
                         } else if (payload == "nckuhubDeleteFollow") {
+						    if(config.status == 0){
+						    	sendFuncCloseMsg(sender);
+						    	return;
+						    } // 未開放情況
                             sendDeleteFollowMenu(sender);
                             return;
                         } else if (payload == "nckuhubFindClassroom") {
