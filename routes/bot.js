@@ -365,11 +365,10 @@ router.post('/', function (req, res) {
                         //未驗證然後輸入的為驗證碼
                         if (!isVarify && event.message.text.length > 15 && event.message.text.substring(0, 7) == "nckuhub") {
                             //找尋未用的驗證碼
-                            db.select().field(["id"]).from("messenger_code").where("is_used=", 0).where("code=", event.message.text).run(function (code) {
+                            db.select().field(["id"]).from("messenger_code").where("code=", event.message.text).run(function (code) {
                                 if (code.length > 0) {
                                     code = code[0];
                                     db.update().table("messenger_code").set({
-                                        is_used: 1,
                                         fb_id: sender,
                                         updated_at: dayjs().format('YYYY-MM-DD HH:mm:ss')
                                     }).where("id=", code.id).run(function (result) {
