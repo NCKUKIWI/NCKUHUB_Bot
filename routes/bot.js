@@ -471,7 +471,7 @@ router.post('/', function (req, res) {
                         var payload = event.postback.payload;
                         var title = event.postback.title;
                         if (payload == "開始使用") {
-                            sendTextMessage(sender, "歡迎你的使用 🎉\n\nNCKU HUB 小幫手的使命是幫大家處理各種選課麻煩事，在開始使用之前，需請你閱讀解鎖說明，並完成心得填寫 🙌🏻\n\n解鎖說明 👉🏻 bit.ly/hubhelp\n提供心得 👉🏻 nckuhub.com\n\n完成填寫心得、取得驗證碼後，請在下方輸入驗證碼以開始使用 👇🏻");
+                            sendTextMessage(sender, "歡迎你的使用 🎉\n\nNCKU HUB 小幫手的使命是幫大家處理各種選課麻煩事，在開始使用之前，需請你閱讀解鎖說明，並完成心得填寫 🙌🏻\n\n" + varifyDescriptionLink + "提供心得 👉🏻 nckuhub.com\n\n完成填寫心得、取得驗證碼後，請在下方輸入驗證碼以開始使用 👇🏻");
                             return;
                         } else if (payload == "cancelBroadcast") {
                             unsubscribeBroadcast(sender);
@@ -892,7 +892,7 @@ function genericTemplateGenerator(subtitle, buttons) {
 }
 
 function sendNotVarify(sender) {
-    sendTextMessage(sender, "你選擇的功能鎖定中 🔐\n\n欲使用本功能，請在下方文字框輸入你的驗證碼，以進行解鎖唷 🔓🔑\n\n解鎖說明 👉🏻 bit.ly/hubhelp\n提供心得 👉🏻 nckuhub.com");
+    sendTextMessage(sender, "你選擇的功能鎖定中 🔐\n\n欲使用本功能，請在下方文字框輸入你的驗證碼，以進行解鎖唷 🔓🔑\n\n" + varifyDescriptionLink + "提供心得 👉🏻 nckuhub.com");
 }
 
 function sendCourseNotFoundMessage(sender) {
