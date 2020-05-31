@@ -32,6 +32,8 @@ app.use(session({
     resave: true
 }));
 
-app.use("/webhook", require("./routes/bot").router);
+app.use("/webhook", require("./routes/new-bot").router);
 app.listen(process.env.PORT || 3000); //監聽3000port
 console.log("running on port 3000");
+
+module.exports = app

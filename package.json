@@ -12,6 +12,8 @@
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.15.2",
+    "chai": "^4.2.0",
+    "chai-http": "^4.3.0",
     "chalk": "^2.4.2",
     "compression": "^1.7.0",
     "cookie-parser": "^1.4.3",
@@ -20,8 +22,10 @@
     "ejs-locals": "^1.0.2",
     "express": "^4.14.0",
     "express-session": "^1.15.5",
+    "facebook-chat-api": "^1.8.0",
     "fbgraph": "^1.4.1",
     "helmet": "^3.8.1",
+    "mocha": "^7.1.2",
     "mysql": "^2.11.1",
     "request": "^2.79.0"
   },

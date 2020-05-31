@@ -358,9 +358,9 @@ router.post('/', function (req, res) {
                         return;
                     }
                     db.select().field(["id"]).from("messenger_code").where("fb_id=", sender).run(function (code) {
-                        if (code.length > 0) {
+                        // if (code.length > 0) {
                             isVarify = true;
-                        }
+                        // }
                         console.log("是否解鎖: " + isVarify);
                         //未驗證然後輸入的為驗證碼
                         if (!isVarify && event.message.text.length > 15 && event.message.text.substring(0, 7) == "nckuhub") {
@@ -464,9 +464,9 @@ router.post('/', function (req, res) {
                     console.log(`[粉專按鈕] 點擊者：${sender}`);
                     console.log("按鈕payload: " + event.postback.payload);
                     db.select().field(["id"]).from("messenger_code").where("fb_id=", sender).run(function (code) {
-                        if (code.length > 0) {
+                        // if (code.length > 0) {
                             isVarify = true;
-                        }
+                        // }
                         console.log("是否解鎖: " + isVarify);
                         var payload = event.postback.payload;
                         var title = event.postback.title;
