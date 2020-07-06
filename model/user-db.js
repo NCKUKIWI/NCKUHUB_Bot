@@ -6,7 +6,7 @@ var dayjs = require('dayjs');
 var api = require('./bot-api');
 var helper = require('../helper');
 
-const link = helper.verifyDescriptionLink
+const link = "解鎖說明 👉🏻 https://reurl.cc/6mnrb\n"
 const host = "https://bot.nckuhub.com";
 
 exports.verify = function verify(id, callback){
