@@ -90,7 +90,7 @@ exports.sendFollowList = function sendFollowList(sender) {
 	
 	db.select().field(["*"]).from("follow").where("fb_id=", sender).run(function (datas) {
 		if (datas.length > 0) {
-			api.sendGenericTemplate(sender, "以下是你目前追蹤的課程",api.getListBtn(datas, Ops.func[Ops.index.FOLLOW_INFO].generator));
+			api.sendGenericTemplate(sender, "以下是你目前追蹤的課程，請點選要取消追蹤的課",api.getListBtn(datas, Ops.func[Ops.index.FOLLOW_INFO].generator));
 		} else {
 			var text = "目前沒有追蹤中的課程喔！";
 			api.sendTextMessage(sender, text);

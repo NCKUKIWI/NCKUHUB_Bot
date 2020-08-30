@@ -19,7 +19,7 @@ const Ops = {
 	func:[
 		{
 			name: "followList",
-			generator: dataGetter => data => `L${dataGetter(data)}`,
+			generator: dataGetter => data => `L${dataGetter(receiver)}`,
 			matcher: data => data.match(/^L/i), //抓payload中的 course_id 用來追蹤課程
 			replacer: data => data.replace(/L|\s/g, ""),
 			do: (receiver) => courseDB.sendFollowList(receiver) 
@@ -33,7 +33,13 @@ const Ops = {
 			generator: dataGetter => data => `placeHint`,
 			matcher: data => data.match(/placeHint/i), //抓payload中的 course_id 用來取消追蹤課程
 			do: (receiver) =>  sendTextMessage(receiver, helper.placeHint)
+		},{
+			name: "cancelfollow",
+			generator: dataGetter => data => `cancelfollow`,
+			matcher: data => data.match(/cancelfollow/i), //抓payload中的 course_id 用來取消追蹤課程
+			do: (receiver) =>  courseDB.sendFollowList(receiver) 
 		}
+
 	]
 }
 
