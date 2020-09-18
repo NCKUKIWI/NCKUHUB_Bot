@@ -73,18 +73,20 @@ exports.sendFixMsg = function sendFixMsg(recipient) {
 }
 
 exports.sendHelp = function sendHelp(recipient){
-	helpBtn = [{
+	helpBtn = [
+		{
+			"type": "postback",
+			"title": "追蹤課程餘額",
+			"payload": "followHint"
+		},
+		{
 		"type": "postback",
-		"title": "列出追蹤課程",
+		"title": "取消追蹤課程",
 		"payload": "L"+recipient
 	},{
 		"type": "postback",
 		"title": "尋找上課地點",
 		"payload": "placeHint"
-	}, {
-		"type": "postback",
-		"title": "追蹤課程餘額",
-		"payload": "followHint"
 	}
 	]
 	sendGenericTemplate(recipient, "您好！\n需要幫忙嗎？",helpBtn);
@@ -204,7 +206,7 @@ function elementsGenerator(subtitle, buttons) {
 	while (buttons.length > 0) {
 		thisButtons = buttons.splice(0, 3);
 		thisElement = {
-			"title": "NCKUHUB",
+			"title": "NCKU HUB",
 			"subtitle": subtitle,
 			"buttons": thisButtons
 		};
