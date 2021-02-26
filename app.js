@@ -6,6 +6,7 @@ var bodyParser = require("body-parser");
 var compression = require("compression");
 var session = require("express-session");
 var cookieParser = require("cookie-parser");
+var cron = require("node-cron");
 var config = require("./config");
 
 var app = express();
@@ -33,6 +34,12 @@ app.use(session({
 }));
 
 app.use("/webhook", require("./routes/new-bot").router);
+
+cron.schedule("0 8,20 * * *", function () {
+    var courseDB = require('./model/course-db');
+    courseDB.remindFollowUser();
+});
+
 app.listen(process.env.PORT || 3000); //監聽3000port
 console.log("running on port 3000");
 

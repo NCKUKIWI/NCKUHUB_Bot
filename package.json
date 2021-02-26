@@ -27,6 +27,7 @@
     "helmet": "^3.8.1",
     "mocha": "^7.1.2",
     "mysql": "^2.11.1",
+    "node-cron": "^2.0.3",
     "request": "^2.79.0"
   },
   "devDependencies": {
